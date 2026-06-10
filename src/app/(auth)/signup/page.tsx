@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -55,13 +56,8 @@ export default function SignupPage() {
       <div className="w-full max-w-sm">
 
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style={{ background: 'var(--accent)' }}>
-            <span className="text-2xl font-bold" style={{ color: 'var(--card)' }}>C</span>
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>
-            Conta<span style={{ color: 'var(--gold)' }}>í</span>
-          </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>Crie sua conta gratuita</p>
+          <Image src="/logo.png" alt="Contaí" width={160} height={45} style={{ objectFit: 'contain', margin: '0 auto' }} priority />
+          <p className="text-sm mt-3" style={{ color: 'var(--muted)' }}>Crie sua conta gratuita</p>
         </div>
 
         <form onSubmit={handleSignup} className="flex flex-col gap-4">

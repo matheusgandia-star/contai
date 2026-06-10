@@ -36,13 +36,8 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style={{ background: 'var(--accent)' }}>
-            <span className="text-2xl font-bold" style={{ color: 'var(--card)' }}>C</span>
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>
-            Conta<span style={{ color: 'var(--gold)' }}>í</span>
-          </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>Controle financeiro pessoal</p>
+          <Image src="/logo.png" alt="Contaí" width={160} height={45} style={{ objectFit: 'contain', margin: '0 auto' }} priority />
+          <p className="text-sm mt-3" style={{ color: 'var(--muted)' }}>Controle financeiro pessoal</p>
         </div>
 
         {/* Form */}
