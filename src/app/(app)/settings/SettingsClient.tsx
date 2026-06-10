@@ -17,14 +17,26 @@ interface Props {
 }
 
 const PRESET_COLORS = [
-  { color: '#0F3D3E', bg: 'rgba(15,61,62,.13)' },
-  { color: '#1E5FA8', bg: 'rgba(30,95,168,.13)' },
-  { color: '#9A6728', bg: 'rgba(154,103,40,.13)' },
-  { color: '#6D3A8E', bg: 'rgba(109,58,142,.13)' },
-  { color: '#B5384A', bg: 'rgba(181,56,74,.13)' },
-  { color: '#2E7D32', bg: 'rgba(46,125,50,.13)' },
-  { color: '#E65100', bg: 'rgba(230,81,0,.13)' },
-  { color: '#5D4037', bg: 'rgba(93,64,55,.13)' },
+  // Verdes
+  { color: '#0F3D3E', bg: 'rgba(15,61,62,.15)' },
+  { color: '#2E7D32', bg: 'rgba(46,125,50,.15)' },
+  { color: '#1B5E20', bg: 'rgba(27,94,32,.15)' },
+  { color: '#00695C', bg: 'rgba(0,105,92,.15)' },
+  // Azuis
+  { color: '#0277BD', bg: 'rgba(2,119,189,.15)' },
+  { color: '#1E5FA8', bg: 'rgba(30,95,168,.15)' },
+  { color: '#283593', bg: 'rgba(40,53,147,.15)' },
+  { color: '#00838F', bg: 'rgba(0,131,143,.15)' },
+  // Roxos e rosas
+  { color: '#6A1B9A', bg: 'rgba(106,27,154,.15)' },
+  { color: '#6D3A8E', bg: 'rgba(109,58,142,.15)' },
+  { color: '#880E4F', bg: 'rgba(136,14,79,.15)' },
+  { color: '#AD1457', bg: 'rgba(173,20,87,.15)' },
+  // Vermelhos e laranjas
+  { color: '#C62828', bg: 'rgba(198,40,40,.15)' },
+  { color: '#B5384A', bg: 'rgba(181,56,74,.15)' },
+  { color: '#E65100', bg: 'rgba(230,81,0,.15)' },
+  { color: '#BF360C', bg: 'rgba(191,54,12,.15)' },
 ]
 
 export default function SettingsClient({ settings, categories, catLimits, userEmail }: Props) {
