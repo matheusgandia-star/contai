@@ -145,7 +145,21 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
                 background: cycleMode === mode ? 'rgba(15,61,62,.06)' : 'var(--card2)'
               }}
             >
-              <span style={{ fontSize: 26, width: 36, textAlign: 'center' }}>{mode === 'standard' ? '📅' : '🧾'}</span>
+              <span style={{ width: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {mode === 'standard' ? (
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="18" height="17" rx="2" stroke={cycleMode === mode ? 'var(--accent)' : 'var(--muted)'} strokeWidth="1.8"/>
+                    <path d="M3 9H21" stroke={cycleMode === mode ? 'var(--accent)' : 'var(--muted)'} strokeWidth="1.8" strokeLinecap="round"/>
+                    <path d="M8 2V5M16 2V5" stroke={cycleMode === mode ? 'var(--accent)' : 'var(--muted)'} strokeWidth="1.8" strokeLinecap="round"/>
+                    <rect x="7" y="13" width="3" height="3" rx="0.5" fill={cycleMode === mode ? 'var(--accent)' : 'var(--muted)'}/>
+                    <rect x="12" y="13" width="3" height="3" rx="0.5" fill={cycleMode === mode ? 'var(--accent)' : 'var(--muted)'}/>
+                  </svg>
+                ) : (
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M9.39211 16.4805C9.39211 16.6462 9.52643 16.7805 9.69211 16.7805H18.6726C18.8381 16.7805 18.9723 16.9145 18.9726 17.08L18.9738 17.8108H8.18127C7.76727 17.8108 7.43127 18.1468 7.43127 18.5608C7.43127 18.9748 7.76727 19.3108 8.18127 19.3108H18.9763L18.9771 19.8085C18.9761 20.0515 18.7751 20.2505 18.5281 20.2505H7.32611C6.36811 20.2505 5.58911 19.4695 5.58911 18.5095C5.58911 17.5555 6.36811 16.7805 7.32611 16.7805H7.59211C7.7578 16.7805 7.89211 16.6462 7.89211 16.4805V2.55C7.89211 2.38431 7.7578 2.25 7.59211 2.25H7.43033C5.58833 2.25 4.08932 3.748 4.08932 5.59V18.4721C4.08911 20.2975 5.54111 21.7505 7.32611 21.7505H18.5281C19.5991 21.7505 20.4741 20.8815 20.4771 19.8095L20.4701 16.0476V4.2C20.4703 3.125 19.5963 2.25 18.5213 2.25H9.69211C9.52643 2.25 9.39211 2.38431 9.39211 2.55V16.4805Z" fill={cycleMode === mode ? 'var(--accent)' : 'var(--muted)'}/>
+                  </svg>
+                )}
+              </span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 700 }}>{mode === 'standard' ? 'Mês Corrido' : 'Ciclo de Fatura'}</div>
                 <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3, lineHeight: 1.4 }}>
