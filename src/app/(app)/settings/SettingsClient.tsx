@@ -6,6 +6,8 @@ import { getCycle } from '@/lib/cycle'
 import type { Category, Settings, CategoryLimit } from '@/lib/types'
 import { createClient } from '@/lib/supabase/client'
 import AppShell from '@/components/AppShell'
+import CategoryIcon from '@/components/CategoryIcon'
+import { CATEGORY_ICONS } from '@/lib/categoryIcons'
 
 interface Props {
   settings: Settings
@@ -14,7 +16,6 @@ interface Props {
   userEmail: string
 }
 
-const PRESET_EMOJIS = ['🛒','⛽','🍽️','🛍️','🎉','🏠','💊','🐾','✈️','🎓','🏋️','💇','🎮','📚','🚗','💰','🎁','🍺','☕','🎬','🎵','💻','📱','🌿','🏖️','🎯','🧴','🧹','💡','🔧']
 const PRESET_COLORS = [
   { color: '#0F3D3E', bg: 'rgba(15,61,62,.13)' },
   { color: '#1E5FA8', bg: 'rgba(30,95,168,.13)' },
@@ -38,7 +39,7 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [ncEmoji, setNcEmoji] = useState(PRESET_EMOJIS[0])
+  const [ncEmoji, setNcEmoji] = useState(CATEGORY_ICONS[0].id)
   const [ncColor, setNcColor] = useState(PRESET_COLORS[0])
   const [ncName, setNcName] = useState('')
   const [cats, setCats] = useState(categories)
@@ -238,8 +239,8 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
               display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0',
               borderBottom: i < cats.length - 1 ? '1px solid var(--border)' : 'none'
             }}>
-              <div style={{ width: 34, height: 34, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0, background: cat.bg }}>
-                {cat.emoji}
+              <div style={{ width: 34, height: 34, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: cat.bg }}>
+                <CategoryIcon emoji={cat.emoji} color={cat.color} size={20} />
               </div>
               <div style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{cat.name}</div>
               {cat.is_default
@@ -315,15 +316,27 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
             <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 100, margin: '0 auto 16px' }} />
             <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 16, textAlign: 'center' }}>Nova Categoria</div>
 
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.3px', marginBottom: 8 }}>Emoji</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 6, marginBottom: 14 }}>
-              {PRESET_EMOJIS.map(e => (
-                <button key={e} type="button" onClick={() => setNcEmoji(e)} style={{
-                  background: ncEmoji === e ? 'rgba(15,61,62,.1)' : 'var(--card2)',
-                  border: `2px solid ${ncEmoji === e ? '#0F3D3E' : 'var(--border)'}`,
-                  borderRadius: 10, padding: 6, textAlign: 'center', fontSize: 20, cursor: 'pointer'
-                }}>{e}</button>
-              ))}
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.3px', marginBottom: 8 }}>Ícone</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8, marginBottom: 14 }}>
+              {CATEGORY_ICONS.map(icon => {
+                const selected = ncEmoji === icon.id
+                return (
+                  <button key={icon.id} type="button" onClick={() => setNcEmoji(icon.id)} title={icon.label} style={{
+                    background: selected ? ncColor.bg : 'var(--card2)',
+                    border: `2px solid ${selected ? ncColor.color : 'var(--border)'}`,
+                    borderRadius: 12, padding: '10px 6px', cursor: 'pointer',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                    transition: 'all .15s'
+                  }}>
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {icon.svg(selected ? ncColor.color : 'var(--muted)')}
+                    </span>
+                    <span style={{ fontSize: 8, color: selected ? ncColor.color : 'var(--muted)', lineHeight: 1.2, textAlign: 'center' }}>
+                      {icon.label.length > 10 ? icon.label.slice(0, 10) + '…' : icon.label}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
 
             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.3px', marginBottom: 8 }}>Cor</div>

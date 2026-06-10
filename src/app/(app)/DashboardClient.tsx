@@ -5,6 +5,7 @@ import { getCycle, pcolorHero, pcolor, pcls, brl, prettyDate } from '@/lib/cycle
 import type { Settings, Expense, Category, CategoryLimit } from '@/lib/types'
 import GaugeRing from '@/components/GaugeRing'
 import AppShell from '@/components/AppShell'
+import CategoryIcon from '@/components/CategoryIcon'
 
 interface Props {
   settings: Settings
@@ -126,8 +127,8 @@ export default function DashboardClient({ settings, expenses, categories, catLim
               borderRadius: 16, padding: '12px 13px', marginBottom: 8,
               border: '1px solid rgba(15,61,62,.08)', boxShadow: '0 1px 4px rgba(15,61,62,.05)'
             }}>
-              <div style={{ width: 42, height: 42, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, flexShrink: 0, background: cat.bg }}>
-                {cat.emoji}
+              <div style={{ width: 42, height: 42, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: cat.bg }}>
+                <CategoryIcon emoji={cat.emoji} color={cat.color} size={22} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 600 }}>{cat.name}</div>
@@ -218,8 +219,8 @@ export default function DashboardClient({ settings, expenses, categories, catLim
                 borderRadius: 14, padding: 12, marginBottom: 7,
                 border: '1px solid rgba(15,61,62,.08)', boxShadow: '0 1px 4px rgba(15,61,62,.05)'
               }}>
-                <div style={{ width: 38, height: 38, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, flexShrink: 0, background: cat?.bg ?? 'var(--card2)' }}>
-                  {cat?.emoji ?? '💸'}
+                <div style={{ width: 38, height: 38, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: cat?.bg ?? 'var(--card2)' }}>
+                  <CategoryIcon emoji={cat?.emoji ?? 'groceries'} color={cat?.color ?? '#0F3D3E'} size={20} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

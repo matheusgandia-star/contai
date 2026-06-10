@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { Category, Settings, CategoryLimit } from '@/lib/types'
 import { getCycle, brl } from '@/lib/cycle'
 import AppShell from '@/components/AppShell'
+import CategoryIcon from '@/components/CategoryIcon'
 
 interface Props {
   categories: Category[]
@@ -115,7 +116,9 @@ export default function AddExpenseClient({ categories, settings, catLimits }: Pr
                   transition: 'all .18s'
                 }}
               >
-                <span style={{ fontSize: 21, display: 'block' }}>{cat.emoji}</span>
+                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 28 }}>
+                  <CategoryIcon emoji={cat.emoji} color={selCat === cat.id ? cat.color : 'var(--muted)'} size={22} />
+                </span>
                 <span style={{ fontSize: 8, color: selCat === cat.id ? '#0F3D3E' : 'var(--muted)', marginTop: 3, display: 'block', lineHeight: 1.2 }}>
                   {cat.name.length > 7 ? cat.name.slice(0, 7) + '…' : cat.name}
                 </span>

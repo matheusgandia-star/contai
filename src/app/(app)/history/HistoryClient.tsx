@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { getCycle, brl, prettyDate } from '@/lib/cycle'
 import type { Category, Settings, Expense } from '@/lib/types'
 import AppShell from '@/components/AppShell'
+import CategoryIcon from '@/components/CategoryIcon'
 
 interface Props { categories: Category[]; settings: Settings; expenses: Expense[] }
 
@@ -119,7 +120,7 @@ export default function HistoryClient({ categories, settings, expenses: initialE
                 const p = totalSpent > 0 ? (cat.sum / totalSpent) * 100 : 0
                 return (
                   <div key={cat.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 14, width: 22, flexShrink: 0 }}>{cat.emoji}</span>
+                    <span style={{ width: 22, flexShrink: 0, display: 'flex', alignItems: 'center' }}><CategoryIcon emoji={cat.emoji} color={cat.color} size={16} /></span>
                     <span style={{ fontSize: 11, color: 'rgba(255,255,255,.65)', width: 70, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cat.name}</span>
                     <div style={{ flex: 1, background: 'rgba(255,255,255,.14)', borderRadius: 100, height: 6, overflow: 'hidden' }}>
                       <div style={{ height: '100%', borderRadius: 100, width: `${p}%`, background: cat.color, transition: 'width .5s ease', filter: 'brightness(1.15)' }} />
@@ -175,8 +176,8 @@ export default function HistoryClient({ categories, settings, expenses: initialE
                     borderRadius: 14, padding: 12, marginBottom: 7,
                     border: '1px solid rgba(15,61,62,.08)', boxShadow: '0 1px 4px rgba(15,61,62,.05)'
                   }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, flexShrink: 0, background: cat?.bg ?? 'var(--card2)' }}>
-                      {cat?.emoji ?? '💸'}
+                    <div style={{ width: 38, height: 38, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: cat?.bg ?? 'var(--card2)' }}>
+                      <CategoryIcon emoji={cat?.emoji ?? 'groceries'} color={cat?.color ?? '#0F3D3E'} size={20} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
