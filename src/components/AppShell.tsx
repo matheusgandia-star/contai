@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 interface Props {
   title?: string
   right?: React.ReactNode
@@ -15,9 +17,14 @@ export default function AppShell({ title, right, children }: Props) {
         padding: '0 18px', height: 52,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <span style={{ fontSize: 18, fontWeight: 700, color: '#FAF7F0', lineHeight: 1 }}>
-          Conta<span style={{ color: 'var(--gold)' }}>í</span>
-        </span>
+        <Image
+          src="/logo.png"
+          alt="Contaí"
+          height={22}
+          width={78}
+          style={{ objectFit: 'contain', mixBlendMode: 'screen' }}
+          priority
+        />
         <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.75)', textAlign: 'right' }}>
           {right ?? title ?? null}
         </div>
