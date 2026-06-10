@@ -1,0 +1,382 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { getCycle } from '@/lib/cycle'
+import type { Category, Settings, CategoryLimit } from '@/lib/types'
+import { createClient } from '@/lib/supabase/client'
+import AppShell from '@/components/AppShell'
+
+interface Props {
+  settings: Settings
+  categories: Category[]
+  catLimits: CategoryLimit[]
+  userEmail: string
+}
+
+const PRESET_EMOJIS = ['🛒','⛽','🍽️','🛍️','🎉','🏠','💊','🐾','✈️','🎓','🏋️','💇','🎮','📚','🚗','💰','🎁','🍺','☕','🎬','🎵','💻','📱','🌿','🏖️','🎯','🧴','🧹','💡','🔧']
+const PRESET_COLORS = [
+  { color: '#0F3D3E', bg: 'rgba(15,61,62,.13)' },
+  { color: '#1E5FA8', bg: 'rgba(30,95,168,.13)' },
+  { color: '#9A6728', bg: 'rgba(154,103,40,.13)' },
+  { color: '#6D3A8E', bg: 'rgba(109,58,142,.13)' },
+  { color: '#B5384A', bg: 'rgba(181,56,74,.13)' },
+  { color: '#2E7D32', bg: 'rgba(46,125,50,.13)' },
+  { color: '#E65100', bg: 'rgba(230,81,0,.13)' },
+  { color: '#5D4037', bg: 'rgba(93,64,55,.13)' },
+]
+
+export default function SettingsClient({ settings, categories, catLimits, userEmail }: Props) {
+  const router = useRouter()
+  const [cycleMode, setCycleMode] = useState<'standard' | 'invoice'>(settings.cycle_mode)
+  const [invoiceDay, setInvoiceDay] = useState(settings.invoice_day || 1)
+  const [monthlyLimit, setMonthlyLimit] = useState(settings.monthly_limit ? String(settings.monthly_limit) : '')
+  const [catLimitMap, setCatLimitMap] = useState<Record<string, string>>(
+    Object.fromEntries(catLimits.map(cl => [cl.category_id, String(cl.limit_amount)]))
+  )
+  const [sheetsUrl, setSheetsUrl] = useState(settings.sheets_url ?? '')
+  const [saving, setSaving] = useState(false)
+  const [toast, setToast] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [ncEmoji, setNcEmoji] = useState(PRESET_EMOJIS[0])
+  const [ncColor, setNcColor] = useState(PRESET_COLORS[0])
+  const [ncName, setNcName] = useState('')
+  const [cats, setCats] = useState(categories)
+
+  const supabase = createClient()
+
+  function showToast(msg: string) {
+    setToast(msg)
+    setTimeout(() => setToast(''), 3000)
+  }
+
+  const previewCycle = getCycle(cycleMode, invoiceDay, 0)
+
+  async function saveSettings() {
+    setSaving(true)
+    const limits: Record<string, number> = {}
+    cats.forEach(c => {
+      const v = parseFloat(catLimitMap[c.id] || '0') || 0
+      if (v > 0) limits[c.id] = v
+    })
+
+    await Promise.all([
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          monthly_limit: parseFloat(monthlyLimit) || 0,
+          cycle_mode: cycleMode,
+          invoice_day: invoiceDay,
+          sheets_url: sheetsUrl.trim() || null,
+        }),
+      }),
+      fetch('/api/category-limits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ limits }),
+      }),
+    ])
+
+    setSaving(false)
+    showToast('✅ Configurações salvas!')
+    router.refresh()
+  }
+
+  async function createCat() {
+    if (!ncName.trim()) { showToast('⚠️ Informe o nome'); return }
+    const res = await fetch('/api/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: ncName.trim(), emoji: ncEmoji, color: ncColor.color, bg: ncColor.bg }),
+    })
+    if (res.ok) {
+      const { category } = await res.json()
+      setCats(prev => [...prev, category])
+      setShowModal(false)
+      setNcName('')
+      showToast(`✅ Categoria "${ncName}" criada!`)
+    }
+  }
+
+  async function deleteCat(id: string, name: string) {
+    if (!confirm(`Excluir a categoria "${name}"?`)) return
+    const res = await fetch(`/api/categories?id=${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setCats(prev => prev.filter(c => c.id !== id))
+      showToast('Categoria removida')
+    }
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  return (
+    <AppShell title="Configurações">
+      <div>
+
+        {/* Ciclo de contabilidade */}
+        <SectionTitle>Ciclo de Contabilidade</SectionTitle>
+        <div style={{ marginBottom: 8 }}>
+          {(['standard', 'invoice'] as const).map(mode => (
+            <div
+              key={mode}
+              onClick={() => setCycleMode(mode)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 13, padding: 14, borderRadius: 14,
+                border: `2px solid ${cycleMode === mode ? '#0F3D3E' : 'var(--border)'}`,
+                cursor: 'pointer', transition: 'all .2s', marginBottom: 8,
+                background: cycleMode === mode ? 'rgba(15,61,62,.06)' : 'var(--card2)'
+              }}
+            >
+              <span style={{ fontSize: 26, width: 36, textAlign: 'center' }}>{mode === 'standard' ? '📅' : '🧾'}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 700 }}>{mode === 'standard' ? 'Mês Corrido' : 'Ciclo de Fatura'}</div>
+                <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3, lineHeight: 1.4 }}>
+                  {mode === 'standard' ? 'Do dia 1 ao último dia do mês' : 'A partir de um dia fixo configurável'}
+                </div>
+              </div>
+              <div style={{
+                width: 22, height: 22, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12,
+                background: cycleMode === mode ? '#0F3D3E' : 'transparent',
+                border: `2px solid ${cycleMode === mode ? '#0F3D3E' : 'var(--border)'}`,
+                color: '#fff'
+              }}>
+                {cycleMode === mode ? '✓' : ''}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {cycleMode === 'invoice' && (
+          <div style={{ background: 'var(--card2)', borderRadius: 12, padding: 14, marginBottom: 16, border: '1px solid var(--border)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+              <span style={{ flex: 1, fontSize: 13, color: 'var(--muted)' }}>Dia de abertura da fatura</span>
+              <input
+                type="number"
+                value={invoiceDay}
+                onChange={e => setInvoiceDay(Math.max(1, Math.min(28, parseInt(e.target.value) || 1)))}
+                min={1} max={28}
+                style={{
+                  background: 'var(--card)', border: '2px solid #0F3D3E', borderRadius: 10,
+                  padding: '9px 14px', color: 'var(--text)', fontSize: 18, fontWeight: 800,
+                  width: 70, textAlign: 'center', outline: 'none'
+                }}
+              />
+            </div>
+            <div style={{ background: 'rgba(15,61,62,.06)', border: '1px solid rgba(15,61,62,.2)', borderRadius: 10, padding: '10px 13px', fontSize: 12, color: '#0F3D3E', fontWeight: 600, textAlign: 'center' }}>
+              Ciclo atual: {previewCycle.startStr.split('-')[2]}/{previewCycle.startStr.split('-')[1]} – {previewCycle.endStr.split('-')[2]}/{previewCycle.endStr.split('-')[1]}
+            </div>
+          </div>
+        )}
+
+        {/* Orçamento */}
+        <SectionTitle>Orçamento Mensal</SectionTitle>
+        <div style={{ background: 'var(--card)', borderRadius: 16, padding: '4px 16px', marginBottom: 20, border: '1px solid rgba(15,61,62,.08)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 500 }}>Limite total do ciclo</div>
+              <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>Valor máximo por período</div>
+            </div>
+            <input
+              type="number"
+              value={monthlyLimit}
+              onChange={e => setMonthlyLimit(e.target.value)}
+              placeholder="R$"
+              min="0"
+              style={{
+                background: 'var(--card2)', border: '1.5px solid var(--border)', borderRadius: 10,
+                padding: '9px 12px', color: 'var(--text)', fontSize: 14, fontWeight: 700,
+                width: 115, textAlign: 'right', outline: 'none'
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border)'}
+            />
+          </div>
+        </div>
+
+        {/* Limites por categoria */}
+        <SectionTitle>Limites por Categoria</SectionTitle>
+        <div style={{ background: 'var(--card)', borderRadius: 16, padding: '4px 16px', marginBottom: 20, border: '1px solid rgba(15,61,62,.08)' }}>
+          {cats.map((cat, i) => (
+            <div key={cat.id} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '12px 0',
+              borderBottom: i < cats.length - 1 ? '1px solid var(--border)' : 'none'
+            }}>
+              <div style={{ fontSize: 14, fontWeight: 500 }}>{cat.emoji} {cat.name}</div>
+              <input
+                type="number"
+                value={catLimitMap[cat.id] ?? ''}
+                onChange={e => setCatLimitMap(prev => ({ ...prev, [cat.id]: e.target.value }))}
+                placeholder="R$"
+                min="0"
+                style={{
+                  background: 'var(--card2)', border: '1.5px solid var(--border)', borderRadius: 10,
+                  padding: '9px 12px', color: 'var(--text)', fontSize: 14, fontWeight: 700,
+                  width: 115, textAlign: 'right', outline: 'none'
+                }}
+                onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+                onBlur={e => e.target.style.borderColor = 'var(--border)'}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Categorias personalizadas */}
+        <SectionTitle>Categorias</SectionTitle>
+        <div style={{ background: 'var(--card)', borderRadius: 16, padding: '4px 16px', marginBottom: 12, border: '1px solid rgba(15,61,62,.08)' }}>
+          {cats.map((cat, i) => (
+            <div key={cat.id} style={{
+              display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0',
+              borderBottom: i < cats.length - 1 ? '1px solid var(--border)' : 'none'
+            }}>
+              <div style={{ width: 34, height: 34, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0, background: cat.bg }}>
+                {cat.emoji}
+              </div>
+              <div style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>{cat.name}</div>
+              {cat.is_default
+                ? <span style={{ fontSize: 9, background: 'rgba(15,61,62,.1)', color: '#0F3D3E', padding: '2px 7px', borderRadius: 100, fontWeight: 700 }}>Padrão</span>
+                : <button onClick={() => deleteCat(cat.id, cat.name)} style={{ background: 'none', border: 'none', color: 'var(--muted)', fontSize: 16, cursor: 'pointer', padding: 4, borderRadius: 6 }}>✕</button>
+              }
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => setShowModal(true)}
+          style={{ width: '100%', padding: 13, borderRadius: 13, border: '1.5px solid var(--border)', background: 'var(--card2)', color: 'var(--muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 20 }}
+        >
+          + Nova Categoria
+        </button>
+
+        {/* Google Sheets */}
+        <SectionTitle>Google Sheets</SectionTitle>
+        <div style={{ background: 'var(--card)', borderRadius: 16, padding: '4px 16px', marginBottom: 20, border: '1px solid rgba(15,61,62,.08)' }}>
+          <div style={{ padding: '12px 0' }}>
+            <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 8 }}>URL do Apps Script</div>
+            <input
+              type="url"
+              value={sheetsUrl}
+              onChange={e => setSheetsUrl(e.target.value)}
+              placeholder="https://script.google.com/..."
+              style={{
+                width: '100%', background: 'var(--card2)', border: '1.5px solid var(--border)',
+                borderRadius: 10, padding: '10px 12px', color: 'var(--text)', fontSize: 13, outline: 'none'
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border)'}
+            />
+          </div>
+        </div>
+
+        {/* Salvar */}
+        <button
+          onClick={saveSettings}
+          disabled={saving}
+          style={{
+            width: '100%', padding: 15, borderRadius: 13, border: 'none',
+            background: 'var(--accent)', color: '#FAF7F0', fontSize: 15, fontWeight: 700,
+            cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1, marginBottom: 12
+          }}
+        >
+          {saving ? 'Salvando...' : 'Salvar Configurações'}
+        </button>
+
+        {/* Conta */}
+        <SectionTitle>Conta</SectionTitle>
+        <div style={{ background: 'var(--card)', borderRadius: 16, padding: '12px 16px', marginBottom: 12, border: '1px solid rgba(15,61,62,.08)', fontSize: 13, color: 'var(--muted)' }}>
+          {userEmail}
+        </div>
+        <button
+          onClick={handleLogout}
+          style={{
+            width: '100%', padding: 13, borderRadius: 13, border: '1px solid rgba(185,28,28,.2)',
+            background: 'rgba(185,28,28,.08)', color: '#991B1B', fontSize: 14, fontWeight: 700, cursor: 'pointer'
+          }}
+        >
+          Sair da conta
+        </button>
+      </div>
+
+      {/* Modal nova categoria */}
+      {showModal && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) setShowModal(false) }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.65)', zIndex: 500, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+        >
+          <div style={{ background: '#FAF7F0', borderRadius: '22px 22px 0 0', padding: 20, width: '100%', maxWidth: 480, maxHeight: '88vh', overflowY: 'auto', border: '1px solid var(--border)', borderBottom: 'none' }}>
+            <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 100, margin: '0 auto 16px' }} />
+            <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 16, textAlign: 'center' }}>Nova Categoria</div>
+
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.3px', marginBottom: 8 }}>Emoji</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8,1fr)', gap: 6, marginBottom: 14 }}>
+              {PRESET_EMOJIS.map(e => (
+                <button key={e} type="button" onClick={() => setNcEmoji(e)} style={{
+                  background: ncEmoji === e ? 'rgba(15,61,62,.1)' : 'var(--card2)',
+                  border: `2px solid ${ncEmoji === e ? '#0F3D3E' : 'var(--border)'}`,
+                  borderRadius: 10, padding: 6, textAlign: 'center', fontSize: 20, cursor: 'pointer'
+                }}>{e}</button>
+              ))}
+            </div>
+
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.3px', marginBottom: 8 }}>Cor</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
+              {PRESET_COLORS.map((c, i) => (
+                <div key={i} onClick={() => setNcColor(c)} style={{
+                  width: 34, height: 34, borderRadius: 10, background: c.color, cursor: 'pointer', flexShrink: 0,
+                  border: `3px solid ${ncColor.color === c.color ? '#222' : 'transparent'}`,
+                  transform: ncColor.color === c.color ? 'scale(1.12)' : 'none',
+                  transition: 'all .15s'
+                }} />
+              ))}
+            </div>
+
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.3px', marginBottom: 8 }}>Nome</div>
+            <input
+              type="text"
+              value={ncName}
+              onChange={e => setNcName(e.target.value)}
+              placeholder="Ex: Academia"
+              maxLength={20}
+              style={{
+                width: '100%', background: 'var(--card)', border: '1.5px solid var(--border)',
+                borderRadius: 13, padding: '13px 15px', color: 'var(--text)', fontSize: 16, outline: 'none', marginBottom: 14
+              }}
+            />
+
+            <button onClick={createCat} style={{
+              width: '100%', padding: 15, borderRadius: 13, border: 'none',
+              background: 'var(--accent)', color: '#FAF7F0', fontSize: 15, fontWeight: 700, cursor: 'pointer'
+            }}>Criar Categoria</button>
+            <button onClick={() => setShowModal(false)} style={{
+              width: '100%', padding: 13, borderRadius: 13, border: '1px solid var(--border)',
+              background: 'var(--card2)', color: 'var(--muted)', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginTop: 8
+            }}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          position: 'fixed', bottom: 90, left: '50%', transform: 'translateX(-50%)',
+          background: '#222', color: '#fff', padding: '10px 20px', borderRadius: 100,
+          fontSize: 13, fontWeight: 600, zIndex: 999, whiteSpace: 'nowrap',
+          boxShadow: '0 4px 20px rgba(0,0,0,.3)'
+        }}>
+          {toast}
+        </div>
+      )}
+    </AppShell>
+  )
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.8px', margin: '0 0 9px' }}>
+      {children}
+    </div>
+  )
+}
