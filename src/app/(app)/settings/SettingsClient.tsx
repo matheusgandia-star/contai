@@ -29,7 +29,7 @@ const PRESET_COLORS = [
 export default function SettingsClient({ settings, categories, catLimits, userEmail }: Props) {
   const router = useRouter()
   const [cycleMode, setCycleMode] = useState<'standard' | 'invoice'>(settings.cycle_mode)
-  const [invoiceDay, setInvoiceDay] = useState(settings.invoice_day || 1)
+  const [invoiceDay, setInvoiceDay] = useState(String(settings.invoice_day || 1))
   const [monthlyLimit, setMonthlyLimit] = useState(settings.monthly_limit ? String(settings.monthly_limit) : '')
   const [catLimitMap, setCatLimitMap] = useState<Record<string, string>>(
     Object.fromEntries(catLimits.map(cl => [cl.category_id, String(cl.limit_amount)]))
@@ -50,7 +50,8 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
     setTimeout(() => setToast(''), 3000)
   }
 
-  const previewCycle = getCycle(cycleMode, invoiceDay, 0)
+  const invoiceDayNum = Math.max(1, Math.min(28, parseInt(invoiceDay) || 1))
+  const previewCycle = getCycle(cycleMode, invoiceDayNum, 0)
 
   async function saveSettings() {
     setSaving(true)
@@ -67,7 +68,7 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
         body: JSON.stringify({
           monthly_limit: parseFloat(monthlyLimit) || 0,
           cycle_mode: cycleMode,
-          invoice_day: invoiceDay,
+          invoice_day: invoiceDayNum,
           sheets_url: sheetsUrl.trim() || null,
         }),
       }),
@@ -157,7 +158,11 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
               <input
                 type="number"
                 value={invoiceDay}
-                onChange={e => setInvoiceDay(Math.max(1, Math.min(28, parseInt(e.target.value) || 1)))}
+                onChange={e => setInvoiceDay(e.target.value)}
+                onBlur={e => {
+                  const v = Math.max(1, Math.min(28, parseInt(e.target.value) || 1))
+                  setInvoiceDay(String(v))
+                }}
                 min={1} max={28}
                 style={{
                   background: 'var(--card)', border: '2px solid #0F3D3E', borderRadius: 10,
