@@ -65,11 +65,11 @@ begin
   insert into public.settings (user_id) values (new.id);
 
   insert into public.categories (id, user_id, name, emoji, color, bg, is_default, display_order) values
-    ('mercado',     new.id, 'Mercado',     '🛒', '#0F3D3E', 'rgba(15,61,62,.13)',  true, 1),
-    ('gasolina',    new.id, 'Gasolina',    '⛽', '#1E5FA8', 'rgba(30,95,168,.13)', true, 2),
-    ('alimentacao', new.id, 'Alimentação', '🍽️', '#9A6728', 'rgba(154,103,40,.13)',true, 3),
-    ('compras',     new.id, 'Compras',     '🛍️', '#6D3A8E', 'rgba(109,58,142,.13)',true, 4),
-    ('lazer',       new.id, 'Lazer',       '🎉', '#B5384A', 'rgba(181,56,74,.13)', true, 5);
+    ('mercado',     new.id, 'Mercado',     'groceries',      '#2E7D32', 'rgba(46,125,50,.15)',   true, 1),
+    ('gasolina',    new.id, 'Gasolina',    'fuel',           '#0277BD', 'rgba(2,119,189,.15)',   true, 2),
+    ('alimentacao', new.id, 'Alimentação', 'food',           '#E65100', 'rgba(230,81,0,.15)',    true, 3),
+    ('compras',     new.id, 'Compras',     'shopping',       '#6A1B9A', 'rgba(106,27,154,.15)',  true, 4),
+    ('lazer',       new.id, 'Lazer',       'entertainment',  '#C62828', 'rgba(198,40,40,.15)',   true, 5);
 
   return new;
 end;

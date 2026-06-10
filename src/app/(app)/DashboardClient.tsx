@@ -6,6 +6,7 @@ import type { Settings, Expense, Category, CategoryLimit } from '@/lib/types'
 import GaugeRing from '@/components/GaugeRing'
 import AppShell from '@/components/AppShell'
 import CategoryIcon from '@/components/CategoryIcon'
+import { UI_ICONS } from '@/lib/categoryIcons'
 
 interface Props {
   settings: Settings
@@ -43,9 +44,10 @@ export default function DashboardClient({ settings, expenses, categories, catLim
     .slice(0, 5)
 
   const alertClass = pct >= 100 ? 'over' : pct >= 90 ? 'danger' : pct >= 70 ? 'warn' : ''
-  const alertText = pct >= 100 ? '⚠️ Limite do ciclo ultrapassado!'
-    : pct >= 90 ? '🔴 Você usou 90% do orçamento do ciclo'
-    : pct >= 70 ? '🟡 Atenção: 70% do orçamento utilizado'
+  const alertColor = alertClass === 'over' ? '#FCA5A5' : alertClass === 'danger' ? '#F09040' : '#F0C040'
+  const alertText = pct >= 100 ? 'Limite do ciclo ultrapassado!'
+    : pct >= 90 ? 'Você usou 90% do orçamento do ciclo'
+    : pct >= 70 ? 'Atenção: 70% do orçamento utilizado'
     : ''
 
   const headerRight = (
@@ -101,8 +103,10 @@ export default function DashboardClient({ settings, expenses, categories, catLim
             <div style={{
               marginTop: 12, padding: '9px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600,
               background: alertClass === 'over' ? 'rgba(185,28,28,.25)' : alertClass === 'danger' ? 'rgba(176,74,16,.25)' : 'rgba(176,125,16,.25)',
-              color: alertClass === 'over' ? '#FCA5A5' : alertClass === 'danger' ? '#F09040' : '#F0C040',
+              color: alertColor,
+              display: 'flex', alignItems: 'center', gap: 6,
             }}>
+              {UI_ICONS.warning(alertColor)}
               {alertText}
             </div>
           )}
@@ -147,15 +151,21 @@ export default function DashboardClient({ settings, expenses, categories, catLim
                         transition: 'width .6s cubic-bezier(.4,0,.2,1)'
                       }} />
                     </div>
-                    {pd >= 70 && (
-                      <span style={{
-                        display: 'inline-block', fontSize: 9.5, fontWeight: 700, padding: '2px 7px', borderRadius: 100, marginTop: 4,
-                        background: cls === 'over' ? 'rgba(185,28,28,.12)' : cls === 'danger' ? 'rgba(176,74,16,.12)' : 'rgba(176,125,16,.12)',
-                        color: cls === 'over' ? '#991B1B' : cls === 'danger' ? '#8B3A0A' : '#7A5800',
-                      }}>
-                        {cls === 'over' ? '⚠️ Ultrapassado' : cls === 'danger' ? '🔴 90% do limite' : '🟡 70% do limite'}
-                      </span>
-                    )}
+                    {pd >= 70 && (() => {
+                      const bc = cls === 'over' ? '#991B1B' : cls === 'danger' ? '#8B3A0A' : '#7A5800'
+                      const label = cls === 'over' ? 'Ultrapassado' : cls === 'danger' ? '90% do limite' : '70% do limite'
+                      return (
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', gap: 3,
+                          fontSize: 9.5, fontWeight: 700, padding: '2px 7px', borderRadius: 100, marginTop: 4,
+                          background: cls === 'over' ? 'rgba(185,28,28,.12)' : cls === 'danger' ? 'rgba(176,74,16,.12)' : 'rgba(176,125,16,.12)',
+                          color: bc,
+                        }}>
+                          {UI_ICONS.warning(bc)}
+                          {label}
+                        </span>
+                      )
+                    })()}
                   </>
                 )}
               </div>
@@ -207,7 +217,9 @@ export default function DashboardClient({ settings, expenses, categories, catLim
 
         {recent.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--muted)' }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>📭</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+              {UI_ICONS.inbox('var(--muted)')}
+            </div>
             <p style={{ fontSize: 14 }}>Nenhum gasto ainda.<br />Toque em <strong>Adicionar</strong>.</p>
           </div>
         ) : (

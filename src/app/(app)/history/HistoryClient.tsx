@@ -6,6 +6,7 @@ import { getCycle, brl, prettyDate } from '@/lib/cycle'
 import type { Category, Settings, Expense } from '@/lib/types'
 import AppShell from '@/components/AppShell'
 import CategoryIcon from '@/components/CategoryIcon'
+import { UI_ICONS } from '@/lib/categoryIcons'
 
 interface Props { categories: Category[]; settings: Settings; expenses: Expense[] }
 
@@ -137,8 +138,8 @@ export default function HistoryClient({ categories, settings, expenses: initialE
         <div style={{ display: 'flex', gap: 7, overflowX: 'auto', paddingBottom: 5, marginBottom: 11, scrollbarWidth: 'none' }}>
           {[
             { id: 'all', label: 'Todos' },
-            ...(hasPixExps ? [{ id: 'pix', label: '⚡ PIX' }] : []),
-            ...categories.filter(c => usedCatIds.has(c.id)).map(c => ({ id: c.id, label: c.emoji + ' ' + c.name }))
+            ...(hasPixExps ? [{ id: 'pix', label: 'PIX', isPix: true }] : []),
+            ...categories.filter(c => usedCatIds.has(c.id)).map(c => ({ id: c.id, label: c.name, cat: c }))
           ].map(pill => (
             <button
               key={pill.id}
@@ -151,7 +152,15 @@ export default function HistoryClient({ categories, settings, expenses: initialE
                 color: filter === pill.id ? '#FAF7F0' : 'var(--text)'
               }}
             >
-              {pill.label}
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                {'isPix' in pill && pill.isPix && UI_ICONS.bolt(filter === pill.id ? '#FAF7F0' : '#D4A373')}
+                {'cat' in pill && pill.cat && (
+                  <span style={{ display: 'flex', alignItems: 'center' }}>
+                    <CategoryIcon emoji={pill.cat.emoji} color={filter === pill.id ? '#FAF7F0' : pill.cat.color} size={13} />
+                  </span>
+                )}
+                {pill.label}
+              </span>
             </button>
           ))}
         </div>
@@ -159,7 +168,9 @@ export default function HistoryClient({ categories, settings, expenses: initialE
         {/* Lista de gastos */}
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--muted)' }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>📭</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+              {UI_ICONS.inbox('var(--muted)')}
+            </div>
             <p style={{ fontSize: 14 }}>Nenhum gasto neste ciclo</p>
           </div>
         ) : (
@@ -195,8 +206,8 @@ export default function HistoryClient({ categories, settings, expenses: initialE
                     </div>
                     <button
                       onClick={() => deleteExpense(exp.id)}
-                      style={{ background: 'none', border: 'none', color: 'var(--muted)', fontSize: 16, cursor: 'pointer', padding: 5, borderRadius: 7 }}
-                    >🗑️</button>
+                      style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', padding: 5, borderRadius: 7, display: 'flex', alignItems: 'center' }}
+                    >{UI_ICONS.trash('var(--muted)')}</button>
                   </div>
                 )
               })}

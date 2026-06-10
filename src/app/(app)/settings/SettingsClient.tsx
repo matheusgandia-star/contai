@@ -212,7 +212,12 @@ export default function SettingsClient({ settings, categories, catLimits, userEm
               padding: '12px 0',
               borderBottom: i < cats.length - 1 ? '1px solid var(--border)' : 'none'
             }}>
-              <div style={{ fontSize: 14, fontWeight: 500 }}>{cat.emoji} {cat.name}</div>
+              <div style={{ fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, borderRadius: 6, background: cat.bg }}>
+                  <CategoryIcon emoji={cat.emoji} color={cat.color} size={16} />
+                </span>
+                {cat.name}
+              </div>
               <input
                 type="number"
                 value={catLimitMap[cat.id] ?? ''}

@@ -43,8 +43,43 @@ export const CATEGORY_ICONS: CategoryIcon[] = [
   { id: 'work', label: 'Trabalho', svg: (c) => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.61496 13.8481C7.61496 13.6891 7.48602 13.5601 7.32696 13.5601H2.95987C2.80082 13.5601 2.67188 13.6891 2.67188 13.8481V16.5169C2.67188 19.0954 4.32884 20.8273 6.79507 20.8273H16.7877C19.2549 20.8273 20.9119 19.0954 20.9119 16.5169V13.8481C20.9119 13.6891 20.7829 13.5601 20.6239 13.5601H16.2502C16.0911 13.5601 15.9622 13.6891 15.9622 13.8481V14.8182C15.9622 15.2157 15.6397 15.5382 15.2422 15.5382C14.8448 15.5382 14.5222 15.2157 14.5222 14.8182V13.8481C14.5222 13.6891 14.3932 13.5601 14.2342 13.5601H9.34296C9.18391 13.5601 9.05496 13.6891 9.05496 13.8481V14.8182C9.05496 15.2157 8.7324 15.5382 8.33496 15.5382C7.93752 15.5382 7.61496 15.2157 7.61496 14.8182V13.8481Z" fill={c}/><path fillRule="evenodd" clipRule="evenodd" d="M15.7375 6.02452C15.7375 6.09847 15.7974 6.15841 15.8714 6.15841H16.7887C19.2549 6.15841 20.9119 7.88642 20.9119 10.4583V11.8321C20.9119 11.9911 20.7829 12.1201 20.6239 12.1201H15.2683C15.2597 12.1198 15.2509 12.1197 15.2422 12.1197C15.2334 12.1197 15.2246 12.1198 15.216 12.1201H8.36117C8.35247 12.1198 8.34374 12.1197 8.33496 12.1197C8.32619 12.1197 8.31745 12.1198 8.30875 12.1201H2.95987C2.80082 12.1201 2.67188 11.9911 2.67188 11.8321V10.4583C2.67188 7.88642 4.32884 6.15841 6.79507 6.15841H7.71333C7.78728 6.15841 7.84722 6.09847 7.84722 6.02452C7.84722 4.45204 9.12595 3.17236 10.6975 3.17236H12.8872C14.4588 3.17236 15.7375 4.45204 15.7375 6.02452Z" fill={c}/></svg> },
 ]
 
+  { id: 'fuel', label: 'Combustível', svg: (c) => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M4 4C4 2.89543 4.89543 2 6 2H12C13.1046 2 14 2.89543 14 4V10H15C16.1046 10 17 10.8954 17 12V17.5C17 18.3284 17.6716 19 18.5 19C19.3284 19 20 18.3284 20 17.5V10.4142L18.7071 9.12132C18.3166 8.73079 18.3166 8.09763 18.7071 7.7071C19.0976 7.31658 19.7308 7.31658 20.1213 7.7071L22 9.58579V17.5C22 19.433 20.433 21 18.5 21C16.567 21 15 19.433 15 17.5V12H14V20C14 21.1046 13.1046 22 12 22H6C4.89543 22 4 21.1046 4 20V4ZM6 4H12V10H6V4ZM6 12H12V14H6V12Z" fill={c}/></svg> },
+  { id: 'leisure', label: 'Lazer', svg: (c) => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 16.5V7.5L16 12L10 16.5Z" fill={c}/></svg> },
+]
+
 export function renderCategoryIcon(iconId: string, color: string, size = 24): React.ReactNode {
   const found = CATEGORY_ICONS.find(i => i.id === iconId)
   if (!found) return null
   return found.svg(color)
+}
+
+// Ícones de UI (não são categorias)
+export const UI_ICONS = {
+  trash: (c = 'currentColor') => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 3H15M3 6H21M19 6L18.2987 16.5193C18.1935 18.0975 17.0959 19 15.5133 19H8.48667C6.90413 19 5.80648 18.0975 5.70131 16.5193L5 6" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M10 11V16M14 11V16" stroke={c} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+  inbox: (c = 'currentColor') => (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 12H8L10 15H14L16 12H21" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5.45 5.11L2 12V18C2 18.5304 2.21071 19.0391 2.58579 19.4142C2.96086 19.7893 3.46957 20 4 20H20C20.5304 20 21.0391 19.7893 21.4142 19.4142C21.7893 19.0391 22 18.5304 22 18V12L18.55 5.11C18.3844 4.77679 18.1292 4.49637 17.813 4.30028C17.4967 4.10419 17.1321 4.0002 16.76 4H7.24C6.86792 4.0002 6.50326 4.10419 6.18704 4.30028C5.87083 4.49637 5.61558 4.77679 5.45 5.11Z" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  warning: (c = 'currentColor') => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18C1.64537 18.3024 1.55299 18.6453 1.55201 18.9945C1.55103 19.3437 1.6415 19.6871 1.81442 19.9905C1.98734 20.2939 2.23672 20.5467 2.53771 20.7238C2.8387 20.9009 3.18082 20.9962 3.53 21H20.47C20.8192 20.9962 21.1613 20.9009 21.4623 20.7238C21.7633 20.5467 22.0127 20.2939 22.1856 19.9905C22.3585 19.6871 22.449 19.3437 22.448 18.9945C22.447 18.6453 22.3546 18.3024 22.18 18L13.71 3.86C13.5317 3.56607 13.2807 3.32308 12.9812 3.15425C12.6817 2.98543 12.3437 2.89662 12 2.89662C11.6563 2.89662 11.3183 2.98543 11.0188 3.15425C10.7193 3.32308 10.4683 3.56607 10.29 3.86Z" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  bolt: (c = 'currentColor') => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill={c} strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  check: (c = 'currentColor') => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 6L9 17L4 12" stroke={c} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
 }
