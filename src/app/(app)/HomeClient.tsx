@@ -38,9 +38,14 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
   const rest = lim - spent
 
   const [input, setInput] = useState('')
-  const [messages, setMessages] = useState<ChatMsg[]>([
-    { role: 'assistant', text: 'Olá! Me conta qual foi seu gasto e eu registro na hora. Pode digitar ou usar o microfone.' }
-  ])
+  const [messages, setMessages] = useState<ChatMsg[]>(() => {
+    if (typeof window === 'undefined') return [{ role: 'assistant', text: 'Olá! Me conta qual foi seu gasto e eu registro na hora. Pode digitar ou usar o microfone.' }]
+    try {
+      const saved = localStorage.getItem('contai_chat')
+      if (saved) return JSON.parse(saved) as ChatMsg[]
+    } catch {}
+    return [{ role: 'assistant', text: 'Olá! Me conta qual foi seu gasto e eu registro na hora. Pode digitar ou usar o microfone.' }]
+  })
   const [lastParsed, setLastParsed] = useState<ParsedExpense | null>(null)
   const [adjustParsed, setAdjustParsed] = useState<ParsedExpense | null>(null)
   const [adjustPayMethod, setAdjustPayMethod] = useState<'credit' | 'pix'>('credit')
@@ -52,6 +57,10 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, step])
+
+  useEffect(() => {
+    try { localStorage.setItem('contai_chat', JSON.stringify(messages)) } catch {}
+  }, [messages])
 
   function addMsg(role: ChatMsg['role'], text: string) {
     setMessages(prev => [...prev, { role, text }])
