@@ -1,19 +1,24 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import type { Category, Settings } from '@/lib/types'
-import HomeClient from './HomeClient'
+import { getCycle, pcolorHero, pcls, brl } from '@/lib/cycle'
+import type { Settings, Expense, Category, CategoryLimit } from '@/lib/types'
+import DashboardClient from './DashboardClient'
 
-export default async function HomePage() {
+export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
   const [
     { data: settingsRow },
+    { data: expenses },
     { data: categories },
+    { data: catLimits },
   ] = await Promise.all([
     supabase.from('settings').select('*').eq('user_id', user.id).single(),
+    supabase.from('expenses').select('*').eq('user_id', user.id),
     supabase.from('categories').select('*').eq('user_id', user.id).order('display_order'),
+    supabase.from('category_limits').select('*').eq('user_id', user.id),
   ])
 
   const settings: Settings = settingsRow ?? {
@@ -25,9 +30,11 @@ export default async function HomePage() {
   }
 
   return (
-    <HomeClient
-      categories={(categories ?? []) as Category[]}
+    <DashboardClient
       settings={settings}
+      expenses={(expenses ?? []) as Expense[]}
+      categories={(categories ?? []) as Category[]}
+      catLimits={(catLimits ?? []) as CategoryLimit[]}
     />
   )
 }

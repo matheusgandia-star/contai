@@ -9,18 +9,27 @@ const items = [
     label: 'Início',
     icon: (
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
-        <path d="M9 21V12h6v9"/>
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
       </svg>
     ),
   },
   {
     href: '/add',
-    label: 'Adicionar',
+    label: 'Manual',
     icon: (
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="9"/>
         <path d="M12 8v8M8 12h8"/>
+      </svg>
+    ),
+  },
+  {
+    href: '/dashboard',
+    label: 'Resumo',
+    icon: (
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
       </svg>
     ),
   },
@@ -63,8 +72,8 @@ export default function BottomNav() {
           <Link key={item.href} href={item.href} style={{
             flex: 1, background: 'none', border: 'none', textDecoration: 'none',
             color: active ? 'var(--accent)' : 'var(--muted)',
-            fontSize: 10, fontWeight: active ? 700 : 600, letterSpacing: '.2px',
-            cursor: 'pointer', padding: '10px 4px',
+            fontSize: 9.5, fontWeight: active ? 700 : 600, letterSpacing: '.2px',
+            cursor: 'pointer', padding: '9px 4px',
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
             transition: 'color .2s'
           }}>
