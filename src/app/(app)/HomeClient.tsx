@@ -127,7 +127,9 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
       return
     }
 
-    autoSave(result)
+    const normalized = msg.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    const isPix = /\bpix\b|debito|débito|dinheiro/.test(normalized)
+    autoSave(result, isPix ? 'pix' : 'credit')
   }
 
   function toggleListening() {
