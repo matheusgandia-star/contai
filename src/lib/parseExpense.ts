@@ -87,7 +87,8 @@ export function parseExpense(text: string, categories: Category[]): ParsedExpens
   let bestScore = 0
 
   for (const cat of categories) {
-    const s = scoreCategory(cat.id, cat.name, words)
+    // use cat.emoji as icon key (matches KEYWORD_MAP keys like 'food', 'groceries')
+    const s = scoreCategory(cat.emoji, cat.name, words)
     if (s > bestScore) { bestScore = s; bestId = cat.id }
   }
 
