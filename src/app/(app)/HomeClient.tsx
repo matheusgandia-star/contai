@@ -47,6 +47,7 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
     return [{ role: 'assistant', text: 'Olá! Me conta qual foi seu gasto e eu registro na hora. Pode digitar ou usar o microfone.' }]
   })
   const [lastParsed, setLastParsed] = useState<ParsedExpense | null>(null)
+  const [lastSavedId, setLastSavedId] = useState<number | null>(null)
   const [adjustParsed, setAdjustParsed] = useState<ParsedExpense | null>(null)
   const [adjustPayMethod, setAdjustPayMethod] = useState<'credit' | 'pix'>('credit')
   const [step, setStep] = useState<Step>('idle')
@@ -93,6 +94,8 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
       addMsg('assistant', 'Erro ao salvar o gasto. Tente novamente.')
       return
     }
+    const saved = await res.json().catch(() => null)
+    if (saved?.expense?.id) setLastSavedId(saved.expense.id)
     setLastParsed(result)
     setStep('idle')
     router.refresh()
@@ -156,10 +159,12 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
 
   async function confirmAdjust() {
     if (!adjustParsed) return
-    // Delete old expense isn't possible without its ID here, so just save new corrected one
+    if (lastSavedId) {
+      await fetch(`/api/expenses?id=${lastSavedId}`, { method: 'DELETE' })
+      setLastSavedId(null)
+    }
     await autoSave(adjustParsed, adjustPayMethod)
     setAdjustParsed(null)
-    setStep('idle')
   }
 
   function cancelAdjust() {
