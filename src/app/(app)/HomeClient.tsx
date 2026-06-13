@@ -127,7 +127,12 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
     autoSave(result)
   }
 
-  function startListening() {
+  function toggleListening() {
+    if (listening) {
+      recognitionRef.current?.stop()
+      setListening(false)
+      return
+    }
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SR) {
       addMsg('assistant', 'Seu navegador não suporta reconhecimento de voz. Digite o gasto.')
@@ -137,17 +142,16 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
     rec.lang = 'pt-BR'
     rec.interimResults = false
     rec.maxAlternatives = 1
-    rec.onresult = (e: any) => { setListening(false); handleSend(e.results[0][0].transcript) }
+    rec.onresult = (e: any) => {
+      setListening(false)
+      const transcript = e.results[0][0].transcript
+      if (transcript.trim()) handleSend(transcript)
+    }
     rec.onerror = () => setListening(false)
     rec.onend = () => setListening(false)
     recognitionRef.current = rec
     rec.start()
     setListening(true)
-  }
-
-  function stopListening() {
-    recognitionRef.current?.stop()
-    setListening(false)
   }
 
   async function confirmAdjust() {
@@ -308,7 +312,7 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6
             }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#C62828', display: 'inline-block', animation: 'pulse 1s infinite' }} />
-              Ouvindo… solte para enviar
+              Ouvindo… toque novamente para enviar
             </div>
           )}
 
@@ -331,7 +335,7 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
                 opacity: busy ? 0.4 : 1,
               }}
             />
-            <button type="button" onPointerDown={startListening} onPointerUp={stopListening} disabled={busy} style={{
+            <button type="button" onClick={toggleListening} disabled={busy} style={{
               width: 42, height: 42, borderRadius: 13, border: 'none', flexShrink: 0,
               background: listening ? '#C62828' : 'rgba(15,61,62,.08)',
               color: listening ? '#fff' : '#0F3D3E',
