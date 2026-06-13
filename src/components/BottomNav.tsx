@@ -64,7 +64,7 @@ export default function BottomNav() {
       width: '100%', maxWidth: 480, background: 'var(--card)',
       borderTop: '1px solid var(--border)', display: 'flex', zIndex: 200,
       height: 56, alignItems: 'stretch',
-      paddingBottom: 'env(safe-area-inset-bottom, 0)'
+      paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 8px)'
     }}>
       {items.map(item => {
         const active = pathname === item.href
