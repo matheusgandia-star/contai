@@ -71,9 +71,11 @@ export default function HistoryClient({ categories, settings, expenses: initialE
 
   const lim      = settings.monthly_limit || 0
   const rest     = lim - totalSpent
-  const today    = new Date()
+  const now      = new Date()
+  const today    = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const cycleEnd = new Date(cycle.endStr)
-  const daysLeft = Math.max(0, Math.ceil((cycleEnd.getTime() - today.getTime()) / 86400000))
+  const cycleEndMidnight = new Date(cycleEnd.getFullYear(), cycleEnd.getMonth(), cycleEnd.getDate())
+  const daysLeft = Math.max(0, Math.round((cycleEndMidnight.getTime() - today.getTime()) / 86400000))
   const projected = totalSpent + avgDay * daysLeft
 
   const catSums = useMemo(() =>

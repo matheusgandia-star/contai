@@ -19,8 +19,10 @@ function toStr(d: Date): string {
 }
 
 function daysUntil(endDate: Date): number {
-  const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59)
-  const diff = Math.ceil((end.getTime() - Date.now()) / 86400000)
+  const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const diff = Math.round((end.getTime() - today.getTime()) / 86400000)
   return Math.max(0, diff)
 }
 
