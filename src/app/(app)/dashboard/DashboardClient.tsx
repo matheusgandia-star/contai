@@ -53,7 +53,6 @@ export default function DashboardClient({ settings, expenses, categories, catLim
   const headerRight = (
     <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', textAlign: 'right', lineHeight: 1.3 }}>
       {cycle.label}
-      {cycle.badge === 'Fatura' && <><br /><span style={{ fontSize: 10 }}>{cycle.rangeStr}</span></>}
     </div>
   )
 
