@@ -243,6 +243,43 @@ export default function HistoryClient({ categories, settings, expenses: initialE
             </div>
           )}
 
+          {/* Daily / weekly budget suggestion */}
+          {lim > 0 && daysLeft > 0 && rest > 0 && (
+            <div style={{ ...s.card }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.6px', marginBottom: 12 }}>
+                Sugestão para não ultrapassar o limite
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div style={{ background: 'rgba(15,61,62,.06)', borderRadius: 13, padding: '13px', border: '1.5px solid rgba(15,61,62,.12)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 6 }}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)">
+                      <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>
+                    </svg>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.4px' }}>Por dia</span>
+                  </div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--accent)', letterSpacing: -0.5 }}>{brl(rest / daysLeft)}</div>
+                  <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 4 }}>{daysLeft} dias restantes</div>
+                </div>
+                <div style={{ background: 'rgba(15,61,62,.06)', borderRadius: 13, padding: '13px', border: '1.5px solid rgba(15,61,62,.12)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 6 }}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--accent)">
+                      <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+                    </svg>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.4px' }}>Por semana</span>
+                  </div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--accent)', letterSpacing: -0.5 }}>{brl((rest / daysLeft) * 7)}</div>
+                  <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 4 }}>{Math.ceil(daysLeft / 7)} semana{Math.ceil(daysLeft / 7) !== 1 ? 's' : ''} restante{Math.ceil(daysLeft / 7) !== 1 ? 's' : ''}</div>
+                </div>
+              </div>
+              {avgDay > rest / daysLeft && (
+                <div style={{ marginTop: 10, padding: '9px 12px', borderRadius: 10, background: 'rgba(198,40,40,.08)', border: '1px solid rgba(198,40,40,.15)', fontSize: 12, color: '#C62828', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="#C62828" style={{ flexShrink: 0, marginTop: 1 }}><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                  Sua média atual ({brl(avgDay)}/dia) está acima da sugestão. Reduza os gastos diários para não estourar o limite.
+                </div>
+              )}
+            </div>
+          )}
+
           {/* vs previous cycle */}
           {prevTotal > 0 && (
             <div style={{ ...s.card }}>
