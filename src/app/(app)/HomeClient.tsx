@@ -133,16 +133,16 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
   }
 
   const headerRight = (
-    <div style={{ textAlign: 'right', lineHeight: 1.3 }}>
+    <div style={{ textAlign: 'right', lineHeight: 1.4 }}>
       {lim > 0 && (
-        <div style={{ fontSize: 13, fontWeight: 800, color: rest < 0 ? '#FCA5A5' : '#FAF7F0' }}>
-          {rest >= 0 ? brl(rest) : '−' + brl(Math.abs(rest))}
-        </div>
+        <>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.4px' }}>Restante</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: rest < 0 ? '#FCA5A5' : '#FAF7F0' }}>
+            {rest >= 0 ? brl(rest) : '−' + brl(Math.abs(rest))}
+          </div>
+        </>
       )}
-      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>
-        {cycle.label}
-        {cycle.badge === 'Fatura' && <><br /><span style={{ fontSize: 10 }}>{cycle.rangeStr}</span></>}
-      </div>
+      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{cycle.label}</div>
     </div>
   )
 
