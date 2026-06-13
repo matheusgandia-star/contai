@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Category, Settings } from '@/lib/types'
-import { brl } from '@/lib/cycle'
+import type { Category, Settings, Expense } from '@/lib/types'
+import { brl, getCycle } from '@/lib/cycle'
 import CategoryIcon from '@/components/CategoryIcon'
 import AppShell from '@/components/AppShell'
 import { parseExpense, type ParsedExpense } from '@/lib/parseExpense'
@@ -11,6 +11,7 @@ import { parseExpense, type ParsedExpense } from '@/lib/parseExpense'
 interface Props {
   categories: Category[]
   settings: Settings
+  expenses: Expense[]
 }
 
 type ChatMsg = { role: 'user' | 'assistant'; text: string }
@@ -21,8 +22,13 @@ function todayStr() {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
 }
 
-export default function HomeClient({ categories, settings }: Props) {
+export default function HomeClient({ categories, settings, expenses }: Props) {
   const router = useRouter()
+  const cycle = getCycle(settings.cycle_mode, settings.invoice_day, 0)
+  const cycleExps = expenses.filter(e => e.date >= cycle.startStr && e.date <= cycle.endStr)
+  const spent = cycleExps.reduce((s, e) => s + e.amount, 0)
+  const lim = settings.monthly_limit || 0
+  const rest = lim - spent
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMsg[]>([
     { role: 'assistant', text: 'Olá! Me conta qual foi seu gasto e eu registro para você. Pode digitar ou usar o microfone.' }
@@ -126,12 +132,22 @@ export default function HomeClient({ categories, settings }: Props) {
     addMsg('assistant', 'Ok! Me conte o gasto novamente quando quiser.')
   }
 
-  const headerRight = settings.monthly_limit > 0 ? (
-    <span style={{ fontSize: 11, fontWeight: 700 }}>Limite: {brl(settings.monthly_limit)}</span>
-  ) : undefined
+  const headerRight = (
+    <div style={{ textAlign: 'right', lineHeight: 1.3 }}>
+      {lim > 0 && (
+        <div style={{ fontSize: 13, fontWeight: 800, color: rest < 0 ? '#FCA5A5' : '#FAF7F0' }}>
+          {rest >= 0 ? brl(rest) : '−' + brl(Math.abs(rest))}
+        </div>
+      )}
+      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>
+        {cycle.label}
+        {cycle.badge === 'Fatura' && <><br /><span style={{ fontSize: 10 }}>{cycle.rangeStr}</span></>}
+      </div>
+    </div>
+  )
 
   return (
-    <AppShell title="Início" right={headerRight} noPadding>
+    <AppShell right={headerRight} noPadding>
       <div style={{
         display: 'flex', flexDirection: 'column',
         height: 'calc(100dvh - 52px)',
