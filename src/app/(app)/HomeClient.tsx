@@ -241,8 +241,24 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
               <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.6px', marginBottom: 12 }}>
                 Ajustar gasto
               </div>
-              <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--accent)', textAlign: 'center', marginBottom: 14, letterSpacing: -1 }}>
-                {brl(adjustParsed.amount)}
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.4px', marginBottom: 7 }}>Valor</div>
+                <input
+                  type="number" inputMode="decimal" step="0.01" min="0"
+                  value={adjustParsed.amount}
+                  onChange={e => {
+                    const v = parseFloat(e.target.value.replace(',', '.'))
+                    if (!isNaN(v)) setAdjustParsed(p => p ? { ...p, amount: v } : p)
+                  }}
+                  style={{
+                    width: '100%', background: 'var(--bg)', border: '2px solid var(--border)',
+                    borderRadius: 13, padding: '14px', color: 'var(--accent)',
+                    fontSize: 28, fontWeight: 900, textAlign: 'center', outline: 'none',
+                    letterSpacing: -0.5,
+                  }}
+                  onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--border)'}
+                />
               </div>
 
               <div style={{ marginBottom: 12 }}>
