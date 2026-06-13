@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { Category, Settings } from '@/lib/types'
 import { brl } from '@/lib/cycle'
 import CategoryIcon from '@/components/CategoryIcon'
+import AppShell from '@/components/AppShell'
 import { parseExpense, type ParsedExpense } from '@/lib/parseExpense'
 
 interface Props {
@@ -125,42 +126,21 @@ export default function HomeClient({ categories, settings }: Props) {
     addMsg('assistant', 'Ok! Me conte o gasto novamente quando quiser.')
   }
 
-  return (
-    <div style={{
-      maxWidth: 480, marginInline: 'auto',
-      minHeight: '100dvh', background: 'var(--bg)',
-      display: 'flex', flexDirection: 'column',
-    }}>
+  const headerRight = settings.monthly_limit > 0 ? (
+    <span style={{ fontSize: 11, fontWeight: 700 }}>Limite: {brl(settings.monthly_limit)}</span>
+  ) : undefined
 
-      {/* Header */}
+  return (
+    <AppShell title="Início" right={headerRight} noPadding>
       <div style={{
-        position: 'sticky', top: 0, zIndex: 100,
-        background: 'var(--accent)',
-        padding: '14px 18px 12px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        boxShadow: '0 2px 12px rgba(15,61,62,.18)'
+        display: 'flex', flexDirection: 'column',
+        height: 'calc(100dvh - 52px)',
       }}>
-        <div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#FAF7F0', letterSpacing: -.3 }}>Contaí</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,.55)', fontWeight: 500, marginTop: 1 }}>Registre seus gastos</div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {settings.monthly_limit > 0 && (
-            <div style={{
-              fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.8)',
-              background: 'rgba(255,255,255,.1)', borderRadius: 100, padding: '4px 10px'
-            }}>
-              Limite: {brl(settings.monthly_limit)}
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Chat area */}
       <div style={{
-        flex: 1, overflowY: 'auto', padding: '16px 16px 0',
+        flex: 1, overflowY: 'auto', padding: '16px 16px 8px',
         display: 'flex', flexDirection: 'column', gap: 10,
-        paddingBottom: 8,
       }}>
 
         {messages.map((m, i) => (
@@ -366,6 +346,7 @@ export default function HomeClient({ categories, settings }: Props) {
       <style>{`
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
       `}</style>
-    </div>
+      </div>
+    </AppShell>
   )
 }

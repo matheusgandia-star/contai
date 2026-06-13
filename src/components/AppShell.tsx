@@ -6,9 +6,10 @@ interface Props {
   title?: string
   right?: React.ReactNode
   children: React.ReactNode
+  noPadding?: boolean
 }
 
-export default function AppShell({ title, right, children }: Props) {
+export default function AppShell({ title, right, children, noPadding }: Props) {
   return (
     <>
       <header style={{
@@ -30,9 +31,11 @@ export default function AppShell({ title, right, children }: Props) {
         </div>
       </header>
 
-      <div style={{ padding: '16px 16px 80px' }}>
-        {children}
-      </div>
+      {noPadding ? children : (
+        <div style={{ padding: '16px 16px 80px' }}>
+          {children}
+        </div>
+      )}
     </>
   )
 }
