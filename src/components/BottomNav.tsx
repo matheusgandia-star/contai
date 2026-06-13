@@ -63,7 +63,7 @@ export default function BottomNav() {
       position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       width: '100%', maxWidth: 480, background: 'var(--card)',
       borderTop: '1px solid var(--border)', display: 'flex', zIndex: 200,
-      height: 64, alignItems: 'stretch',
+      height: 68, alignItems: 'stretch',
       paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)'
     }}>
       {items.map(item => {
@@ -72,7 +72,7 @@ export default function BottomNav() {
           <Link key={item.href} href={item.href} style={{
             flex: 1, background: 'none', border: 'none', textDecoration: 'none',
             color: active ? 'var(--accent)' : 'var(--muted)',
-            fontSize: 10.5, fontWeight: active ? 700 : 600, letterSpacing: '.2px',
+            fontSize: 11, fontWeight: active ? 700 : 600, letterSpacing: '.2px',
             cursor: 'pointer', padding: '6px 4px',
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
             transition: 'color .2s'
