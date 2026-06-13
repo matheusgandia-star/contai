@@ -62,6 +62,14 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
     try { localStorage.setItem('contai_chat', JSON.stringify(messages)) } catch {}
   }, [messages])
 
+  // Request mic permission once so the browser/OS remembers it across sessions
+  useEffect(() => {
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices) return
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => stream.getTracks().forEach(t => t.stop()))
+      .catch(() => {}) // user denied — handled gracefully when they tap mic
+  }, [])
+
   function addMsg(role: ChatMsg['role'], text: string) {
     setMessages(prev => [...prev, { role, text }])
   }
