@@ -292,7 +292,7 @@ export default function HomeClient({ categories, settings, expenses }: Props) {
         <div style={{
           padding: '10px 12px',
           paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))',
-          background: 'var(--bg)', borderTop: '1px solid var(--border)', marginBottom: 56,
+          background: 'var(--bg)', borderTop: '1px solid var(--border)', marginBottom: 64,
         }}>
           {listening && (
             <div style={{

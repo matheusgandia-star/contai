@@ -32,7 +32,7 @@ export default function AppShell({ title, right, children, noPadding }: Props) {
       </header>
 
       {noPadding ? children : (
-        <div style={{ padding: '16px 16px 80px' }}>
+        <div style={{ padding: '16px 16px 88px' }}>
           {children}
         </div>
       )}
