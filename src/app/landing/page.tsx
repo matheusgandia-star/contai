@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import LandingDemo from './LandingDemo'
 
 export const metadata = {
   title: 'Contaí — Controle financeiro que cabe no seu dia',
@@ -457,6 +458,9 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
+
+      {/* SIMULATOR */}
+      <LandingDemo />
 
       {/* SHOWCASE: Chat */}
       <section style={{ background: '#F4F0E6', padding: '80px 24px' }}>
