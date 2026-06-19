@@ -379,7 +379,7 @@ export default function LandingPage() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         maxWidth: '100%',
       }}>
-        <Image src="/logo.png" alt="Contaí" width={90} height={28} style={{ objectFit: 'contain' }} priority />
+        <Image src="/logo-verde.svg" alt="Contaí" width={110} height={32} style={{ objectFit: 'contain' }} priority />
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <Link href="/auth/login" style={{ fontSize: 14, fontWeight: 600, color: '#0F3D3E', textDecoration: 'none' }}>Entrar</Link>
           <Link href="/auth/signup" style={{ fontSize: 14, fontWeight: 700, color: '#FAF7F0', background: '#0F3D3E', borderRadius: 10, padding: '8px 18px', textDecoration: 'none' }}>
@@ -629,7 +629,7 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer style={{ background: '#050f10', padding: '32px 24px', textAlign: 'center' }}>
-        <Image src="/logo.png" alt="Contaí" width={80} height={25} style={{ objectFit: 'contain', marginBottom: 16, opacity: 0.5 }} />
+        <Image src="/logo-verde.svg" alt="Contaí" width={100} height={30} style={{ objectFit: 'contain', marginBottom: 16, opacity: 0.4 }} />
         <p style={{ fontSize: 12, color: 'rgba(250,247,240,0.25)' }}>© {new Date().getFullYear()} Contaí · Todos os direitos reservados</p>
       </footer>
     </div>
