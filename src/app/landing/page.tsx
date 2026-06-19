@@ -6,246 +6,330 @@ export const metadata = {
   description: 'Registre gastos por voz, acompanhe limites e entenda seus hábitos financeiros. Simples, rápido e sem complicação.',
 }
 
-// ─── Phone mockup wrapper ────────────────────────────────────────────────────
+// ─── Phone Shell ─────────────────────────────────────────────────────────────
 
-function Phone({ children, scale = 1 }: { children: React.ReactNode; scale?: number }) {
+function PhoneShell({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
     <div style={{
-      width: 220 * scale, flexShrink: 0,
-      background: '#111', borderRadius: 36 * scale,
-      padding: `${12 * scale}px ${8 * scale}px`,
-      boxShadow: '0 32px 80px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.08)',
-      position: 'relative',
+      width: 260, flexShrink: 0, position: 'relative',
+      background: '#1a1a1a',
+      borderRadius: 44,
+      padding: '14px 10px',
+      boxShadow: '0 40px 100px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.1), inset 0 0 0 1px rgba(255,255,255,0.05)',
+      ...style,
     }}>
-      {/* notch */}
+      {/* Side buttons */}
+      <div style={{ position: 'absolute', left: -3, top: 80, width: 3, height: 28, background: '#333', borderRadius: '2px 0 0 2px' }} />
+      <div style={{ position: 'absolute', left: -3, top: 116, width: 3, height: 48, background: '#333', borderRadius: '2px 0 0 2px' }} />
+      <div style={{ position: 'absolute', left: -3, top: 172, width: 3, height: 48, background: '#333', borderRadius: '2px 0 0 2px' }} />
+      <div style={{ position: 'absolute', right: -3, top: 120, width: 3, height: 64, background: '#333', borderRadius: '0 2px 2px 0' }} />
+      {/* Screen */}
       <div style={{
-        position: 'absolute', top: 12 * scale, left: '50%', transform: 'translateX(-50%)',
-        width: 60 * scale, height: 6 * scale, background: '#222', borderRadius: 99, zIndex: 10,
-      }} />
-      <div style={{
-        background: '#EDE9DF', borderRadius: 28 * scale,
-        overflow: 'hidden', height: 400 * scale,
+        background: '#EDE9DF', borderRadius: 34,
+        overflow: 'hidden', height: 520,
         display: 'flex', flexDirection: 'column',
+        position: 'relative',
       }}>
+        {/* Status bar */}
+        <div style={{
+          height: 28, background: '#0F3D3E',
+          display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
+          padding: '0 16px 5px', flexShrink: 0,
+        }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>9:41</span>
+          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+            {/* signal */}
+            <svg width="12" height="8" viewBox="0 0 12 8"><rect x="0" y="4" width="2" height="4" rx="0.5" fill="rgba(255,255,255,0.6)"/><rect x="3" y="2.5" width="2" height="5.5" rx="0.5" fill="rgba(255,255,255,0.6)"/><rect x="6" y="1" width="2" height="7" rx="0.5" fill="rgba(255,255,255,0.8)"/><rect x="9" y="0" width="2" height="8" rx="0.5" fill="white"/></svg>
+            {/* wifi */}
+            <svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M5.5 6.5a1 1 0 110 2 1 1 0 010-2z" fill="white"/><path d="M2.5 4.5a4.5 4.5 0 016 0" stroke="rgba(255,255,255,0.7)" strokeWidth="1.2" strokeLinecap="round"/><path d="M0.5 2.5a7.5 7.5 0 0110 0" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" strokeLinecap="round"/></svg>
+            {/* battery */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <div style={{ width: 18, height: 9, border: '1px solid rgba(255,255,255,0.6)', borderRadius: 2, padding: 1 }}>
+                <div style={{ width: '75%', height: '100%', background: 'white', borderRadius: 1 }} />
+              </div>
+              <div style={{ width: 2, height: 4, background: 'rgba(255,255,255,0.6)', borderRadius: '0 1px 1px 0' }} />
+            </div>
+          </div>
+        </div>
         {children}
       </div>
     </div>
   )
 }
 
-// ─── Screen: Chat / Home ─────────────────────────────────────────────────────
+// ─── Bottom Nav ───────────────────────────────────────────────────────────────
 
-function ScreenHome() {
+function BottomNav({ active }: { active: 'home' | 'add' | 'dashboard' | 'history' | 'settings' }) {
+  const items = [
+    { key: 'home', label: 'Início', path: 'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z' },
+    { key: 'add', label: 'Manual', path: 'M12 5v14M5 12h14' },
+    { key: 'dashboard', label: 'Resumo', path: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z' },
+    { key: 'history', label: 'Análise', path: 'M3 3v18h18M7 16l4-4 4 4 4-6' },
+    { key: 'settings', label: 'Config', path: 'M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z' },
+  ]
   return (
-    <>
-      {/* header */}
-      <div style={{ background: '#0F3D3E', padding: '28px 12px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 6, width: 52, height: 14 }} />
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>RESTANTE</div>
-          <div style={{ fontSize: 11, color: '#D4A373', fontWeight: 800 }}>R$ 625,37</div>
-        </div>
-      </div>
-      {/* chat area */}
-      <div style={{ flex: 1, padding: '10px 10px 6px', display: 'flex', flexDirection: 'column', gap: 7, overflowY: 'hidden' }}>
-        {/* assistant bubble */}
-        <div style={{ alignSelf: 'flex-start', background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: '12px 12px 12px 3px', padding: '7px 10px', maxWidth: '80%' }}>
-          <div style={{ fontSize: 8, color: '#444', lineHeight: 1.4 }}>Olá! Me conta qual foi seu gasto. Ex: "gastei 45 no mercado"</div>
-        </div>
-        {/* user bubble */}
-        <div style={{ alignSelf: 'flex-end', background: '#0F3D3E', borderRadius: '12px 12px 3px 12px', padding: '7px 10px', maxWidth: '80%' }}>
-          <div style={{ fontSize: 8, color: '#FAF7F0', lineHeight: 1.4 }}>pizza 38 reais</div>
-        </div>
-        {/* assistant reply */}
-        <div style={{ alignSelf: 'flex-start', background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: '12px 12px 12px 3px', padding: '7px 10px', maxWidth: '85%' }}>
-          <div style={{ fontSize: 8, color: '#444', lineHeight: 1.4 }}>✓ Registrado! <strong>R$ 38,00</strong> em <strong>Alimentação</strong>. Se quiser ajustar, é só pedir.</div>
-        </div>
-        {/* user bubble */}
-        <div style={{ alignSelf: 'flex-end', background: '#0F3D3E', borderRadius: '12px 12px 3px 12px', padding: '7px 10px', maxWidth: '80%' }}>
-          <div style={{ fontSize: 8, color: '#FAF7F0', lineHeight: 1.4 }}>gasolina 150</div>
-        </div>
-        {/* assistant reply */}
-        <div style={{ alignSelf: 'flex-start', background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: '12px 12px 12px 3px', padding: '7px 10px', maxWidth: '85%' }}>
-          <div style={{ fontSize: 8, color: '#444', lineHeight: 1.4 }}>✓ <strong>R$ 150,00</strong> em <strong>Gasolina</strong> registrado!</div>
-        </div>
-        <div style={{ flex: 1 }} />
-        {/* input bar */}
-        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.15)', borderRadius: 12, padding: '6px 8px', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ flex: 1, fontSize: 7.5, color: '#bbb' }}>Ex: uber 22 reais...</div>
-          <div style={{ width: 20, height: 20, borderRadius: 8, background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg viewBox="0 0 24 24" width="10" height="10" fill="#FAF7F0"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm4-3c0 2.21-1.79 4-4 4s-4-1.79-4-4H6c0 2.97 2.16 5.44 5 5.92V20h2v-2.08c2.84-.48 5-2.95 5-5.92h-2z"/></svg>
-          </div>
-        </div>
-      </div>
-      {/* bottom nav */}
-      <div style={{ background: '#FAF7F0', borderTop: '1px solid rgba(15,61,62,0.1)', display: 'flex', padding: '5px 0 8px' }}>
-        {[
-          { label: 'Início', active: true, path: 'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z' },
-          { label: 'Manual', active: false, path: 'M12 5v14M5 12h14' },
-          { label: 'Resumo', active: false, path: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z' },
-          { label: 'Análise', active: false, path: 'M3 3v18h18M7 16l4-4 4 4 4-6' },
-          { label: 'Config', active: false, path: 'M12 15a3 3 0 100-6 3 3 0 000 6z' },
-        ].map(item => (
-          <div key={item.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke={item.active ? '#0F3D3E' : '#ccc'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <div style={{ background: '#FAF7F0', borderTop: '1px solid rgba(15,61,62,0.1)', display: 'flex', padding: '6px 0 10px', flexShrink: 0 }}>
+      {items.map(item => {
+        const isActive = item.key === active
+        return (
+          <div key={item.key} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke={isActive ? '#0F3D3E' : '#C8C8BA'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d={item.path} />
             </svg>
-            <span style={{ fontSize: 6, color: item.active ? '#0F3D3E' : '#ccc', fontWeight: item.active ? 700 : 500 }}>{item.label}</span>
+            <span style={{ fontSize: 7.5, color: isActive ? '#0F3D3E' : '#C8C8BA', fontWeight: isActive ? 700 : 500 }}>{item.label}</span>
           </div>
-        ))}
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── Screen: Chat ────────────────────────────────────────────────────────────
+
+function ScreenChat() {
+  return (
+    <>
+      {/* App Header */}
+      <div style={{ background: '#0F3D3E', padding: '8px 14px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <svg width="56" height="18" viewBox="0 0 56 18"><text x="0" y="14" fontFamily="-apple-system,sans-serif" fontWeight="800" fontSize="14" fill="white">Contaí</text></svg>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '.3px' }}>RESTANTE</div>
+          <div style={{ fontSize: 13, color: '#D4A373', fontWeight: 900 }}>R$ 625,37</div>
+          <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.4)' }}>09/Jun a 08/Jul</div>
+        </div>
       </div>
+
+      {/* Messages */}
+      <div style={{ flex: 1, padding: '12px 12px 8px', display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'hidden' }}>
+        {/* assistant */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end' }}>
+          <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 10 }}>🤖</span>
+          </div>
+          <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: '12px 12px 12px 3px', padding: '8px 11px', maxWidth: '78%', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 9, color: '#333', lineHeight: 1.5 }}>Oi! Me conta seu gasto. Ex: <span style={{ color: '#0F3D3E', fontWeight: 600 }}>"gastei 45 no mercado"</span> ou fale pelo microfone 🎙️</div>
+          </div>
+        </div>
+
+        {/* user */}
+        <div style={{ alignSelf: 'flex-end', background: '#0F3D3E', borderRadius: '12px 12px 3px 12px', padding: '8px 11px', maxWidth: '72%' }}>
+          <div style={{ fontSize: 9, color: '#FAF7F0' }}>pizza 38 reais no jantar</div>
+        </div>
+
+        {/* assistant reply with card */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end' }}>
+          <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 10 }}>🤖</span>
+          </div>
+          <div style={{ background: '#FAF7F0', border: '1.5px solid rgba(15,61,62,0.15)', borderRadius: '12px 12px 12px 3px', padding: '8px 11px', maxWidth: '82%', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 9, color: '#333', lineHeight: 1.5, marginBottom: 6 }}>✅ Registrado!</div>
+            <div style={{ background: '#EDE9DF', borderRadius: 8, padding: '7px 9px', display: 'flex', alignItems: 'center', gap: 7 }}>
+              <span style={{ fontSize: 18 }}>🍕</span>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: '#0F3D3E' }}>R$ 38,00</div>
+                <div style={{ fontSize: 8, color: '#888' }}>Alimentação · Hoje</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 8, color: '#888', marginTop: 5 }}>Quer ajustar? É só pedir.</div>
+          </div>
+        </div>
+
+        {/* user */}
+        <div style={{ alignSelf: 'flex-end', background: '#0F3D3E', borderRadius: '12px 12px 3px 12px', padding: '8px 11px', maxWidth: '72%' }}>
+          <div style={{ fontSize: 9, color: '#FAF7F0' }}>gasolina 150 pix</div>
+        </div>
+
+        {/* assistant */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end' }}>
+          <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 10 }}>🤖</span>
+          </div>
+          <div style={{ background: '#FAF7F0', border: '1.5px solid rgba(15,61,62,0.15)', borderRadius: '12px 12px 12px 3px', padding: '8px 11px', maxWidth: '82%', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 9, color: '#333', lineHeight: 1.5, marginBottom: 6 }}>✅ Salvo via PIX!</div>
+            <div style={{ background: '#EDE9DF', borderRadius: 8, padding: '7px 9px', display: 'flex', alignItems: 'center', gap: 7 }}>
+              <span style={{ fontSize: 18 }}>⛽</span>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: '#0F3D3E' }}>R$ 150,00</div>
+                <div style={{ fontSize: 8, color: '#888' }}>Gasolina · PIX/Débito</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Input bar */}
+      <div style={{ padding: '0 10px 4px', flexShrink: 0 }}>
+        <div style={{ background: '#FAF7F0', border: '1.5px solid rgba(15,61,62,0.15)', borderRadius: 16, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 7, boxShadow: '0 2px 8px rgba(15,61,62,0.06)' }}>
+          <div style={{ flex: 1, fontSize: 9, color: '#bbb' }}>Ex: uber 22 reais...</div>
+          <div style={{ width: 26, height: 26, borderRadius: 10, background: 'rgba(15,61,62,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="#0F3D3E"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm4-3c0 2.21-1.79 4-4 4s-4-1.79-4-4H6c0 2.97 2.16 5.44 5 5.92V20h2v-2.08c2.84-.48 5-2.95 5-5.92h-2z"/></svg>
+          </div>
+          <div style={{ width: 26, height: 26, borderRadius: 10, background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="#FAF7F0"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <BottomNav active="home" />
     </>
   )
 }
 
-// ─── Screen: Dashboard ────────────────────────────────────────────────────────
+// ─── Screen: Resumo ───────────────────────────────────────────────────────────
 
 function ScreenDashboard() {
+  const cats = [
+    { emoji: '⛽', name: 'Gasolina', pct: 82, val: 'R$ 364', color: '#3B82F6' },
+    { emoji: '🐾', name: 'Athena', pct: 70, val: 'R$ 350', color: '#EC4899' },
+    { emoji: '🍽️', name: 'Alimentação', pct: 58, val: 'R$ 290', color: '#F97316' },
+    { emoji: '🛍️', name: 'Compras', pct: 44, val: 'R$ 252', color: '#A855F7' },
+    { emoji: '🅿️', name: 'Pedágio', pct: 11, val: 'R$ 50', color: '#EF4444' },
+  ]
   return (
     <>
-      <div style={{ background: '#0F3D3E', padding: '28px 12px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 6, width: 52, height: 14 }} />
+      <div style={{ background: '#0F3D3E', padding: '8px 14px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <svg width="56" height="18" viewBox="0 0 56 18"><text x="0" y="14" fontFamily="-apple-system,sans-serif" fontWeight="800" fontSize="14" fill="white">Contaí</text></svg>
         <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>09/Jun a 08/Jul</div>
       </div>
-      <div style={{ flex: 1, padding: '10px 10px 0', overflowY: 'hidden', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {/* hero card */}
-        <div style={{ background: '#0F3D3E', borderRadius: 14, padding: '12px' }}>
-          <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginBottom: 8 }}>FATURA 09/JUN A 08/JUL</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+
+      <div style={{ flex: 1, padding: '10px', overflowY: 'hidden', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {/* Hero card */}
+        <div style={{ background: 'linear-gradient(135deg, #0F3D3E, #1a5c5d)', borderRadius: 16, padding: '12px 14px' }}>
+          <div style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.5)', fontWeight: 700, letterSpacing: '.5px', marginBottom: 10 }}>FATURA 09/JUN A 08/JUL</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, marginBottom: 12 }}>
             {[
-              { v: 'R$ 1.374', l: 'TOTAL GASTO' },
-              { v: 'R$ 343', l: 'MÉDIA/DIA' },
+              { v: 'R$ 1.374,63', l: 'TOTAL GASTO' },
+              { v: 'R$ 343,66', l: 'MÉDIA/DIA ATIVO' },
               { v: '14', l: 'TRANSAÇÕES' },
-              { v: '4%', l: 'PIX/DÉBITO' },
+              { v: '4%', l: 'PIX / DÉBITO', gold: true },
             ].map(t => (
-              <div key={t.l} style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 8, padding: '6px 8px' }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: '#FAF7F0' }}>{t.v}</div>
-                <div style={{ fontSize: 6, color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>{t.l}</div>
+              <div key={t.l} style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 10, padding: '7px 9px' }}>
+                <div style={{ fontSize: 12, fontWeight: 900, color: t.gold ? '#D4A373' : '#FAF7F0', marginBottom: 2 }}>{t.v}</div>
+                <div style={{ fontSize: 6.5, color: 'rgba(255,255,255,0.4)', fontWeight: 700, letterSpacing: '.3px' }}>{t.l}</div>
               </div>
             ))}
           </div>
-          {/* category bars */}
-          <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 5 }}>
-            {[
-              { name: 'Gasolina', pct: 80, color: '#3B82F6', val: 'R$ 364' },
-              { name: 'Alimentação', pct: 55, color: '#F97316', val: 'R$ 290' },
-              { name: 'Compras', pct: 40, color: '#A855F7', val: 'R$ 252' },
-            ].map(c => (
-              <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.7)', width: 44, flexShrink: 0 }}>{c.name}</div>
-                <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.1)', borderRadius: 99 }}>
-                  <div style={{ width: `${c.pct}%`, height: '100%', background: c.color, borderRadius: 99 }} />
-                </div>
-                <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.6)', width: 28, textAlign: 'right', flexShrink: 0 }}>{c.val}</div>
+          {cats.map(c => (
+            <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+              <span style={{ fontSize: 11, width: 16, textAlign: 'center' }}>{c.emoji}</span>
+              <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.7)', width: 56, flexShrink: 0 }}>{c.name}</div>
+              <div style={{ flex: 1, height: 5, background: 'rgba(255,255,255,0.1)', borderRadius: 99 }}>
+                <div style={{ width: `${c.pct}%`, height: '100%', background: c.color, borderRadius: 99 }} />
               </div>
-            ))}
-          </div>
+              <div style={{ fontSize: 8, color: c.color, width: 34, textAlign: 'right', flexShrink: 0, fontWeight: 700 }}>{c.val}</div>
+            </div>
+          ))}
         </div>
-        {/* remaining */}
-        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 12, padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+        {/* Remaining card */}
+        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 14, padding: '11px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
           <div>
-            <div style={{ fontSize: 7, color: '#888', fontWeight: 600 }}>RESTANTE NO CICLO</div>
-            <div style={{ fontSize: 14, fontWeight: 900, color: '#0F3D3E' }}>R$ 625,37</div>
+            <div style={{ fontSize: 7, color: '#888', fontWeight: 700, letterSpacing: '.3px', marginBottom: 2 }}>RESTANTE NO CICLO</div>
+            <div style={{ fontSize: 17, fontWeight: 900, color: '#0F3D3E' }}>R$ 625,37</div>
+            <div style={{ fontSize: 7.5, color: '#888', marginTop: 2 }}>~R$ 25,01/dia restante</div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 7, color: '#888', fontWeight: 600 }}>DIAS RESTANTES</div>
-            <div style={{ fontSize: 14, fontWeight: 900, color: '#D4A373' }}>25</div>
+            <div style={{ fontSize: 7, color: '#888', fontWeight: 700, letterSpacing: '.3px', marginBottom: 2 }}>DIAS RESTANTES</div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: '#D4A373', lineHeight: 1 }}>25</div>
+            <div style={{ fontSize: 7.5, color: '#888', marginTop: 2 }}>dias no ciclo</div>
           </div>
         </div>
       </div>
-      {/* bottom nav */}
-      <div style={{ background: '#FAF7F0', borderTop: '1px solid rgba(15,61,62,0.1)', display: 'flex', padding: '5px 0 8px', marginTop: 'auto' }}>
-        {[
-          { label: 'Início', active: false },
-          { label: 'Manual', active: false },
-          { label: 'Resumo', active: true },
-          { label: 'Análise', active: false },
-          { label: 'Config', active: false },
-        ].map(item => (
-          <div key={item.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            <div style={{ width: 13, height: 13, borderRadius: 3, background: item.active ? '#0F3D3E' : '#e8e8e8' }} />
-            <span style={{ fontSize: 6, color: item.active ? '#0F3D3E' : '#ccc', fontWeight: item.active ? 700 : 500 }}>{item.label}</span>
-          </div>
-        ))}
-      </div>
+
+      <BottomNav active="dashboard" />
     </>
   )
 }
 
-// ─── Screen: Análise ─────────────────────────────────────────────────────────
+// ─── Screen: Análise ──────────────────────────────────────────────────────────
 
 function ScreenAnalysis() {
+  const heatDays = [0,0,0.2,0,0.7,0,0.9,0,0.3,0,0.8,0,0.1,0,0.6,0.5,0,0.2,0,1,0,0.4,0,0.7,0,0.2,0.5,0,0,0]
   return (
     <>
-      <div style={{ background: '#0F3D3E', padding: '28px 12px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 6, width: 52, height: 14 }} />
+      <div style={{ background: '#0F3D3E', padding: '8px 14px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <svg width="56" height="18" viewBox="0 0 56 18"><text x="0" y="14" fontFamily="-apple-system,sans-serif" fontWeight="800" fontSize="14" fill="white">Contaí</text></svg>
         <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>Análise</div>
       </div>
-      <div style={{ flex: 1, padding: '10px', overflowY: 'hidden', display: 'flex', flexDirection: 'column', gap: 7 }}>
-        {/* health score */}
-        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <svg viewBox="0 0 36 36" width="48" height="48">
-            <circle cx="18" cy="18" r="15" fill="none" stroke="#e8e8e8" strokeWidth="3" />
-            <circle cx="18" cy="18" r="15" fill="none" stroke="#0F3D3E" strokeWidth="3"
-              strokeDasharray={`${0.9 * 94} 94`} strokeLinecap="round"
-              transform="rotate(-90 18 18)" />
-            <text x="18" y="16" textAnchor="middle" fontSize="8" fontWeight="900" fill="#0F3D3E">90</text>
-            <text x="18" y="23" textAnchor="middle" fontSize="4.5" fill="#888">ÓTIMO</text>
-          </svg>
+
+      {/* Tab toggle */}
+      <div style={{ padding: '8px 10px 4px', flexShrink: 0 }}>
+        <div style={{ background: '#E8E4D9', borderRadius: 10, padding: 3, display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+          <div style={{ background: '#0F3D3E', borderRadius: 8, padding: '5px', textAlign: 'center', fontSize: 8, fontWeight: 700, color: '#FAF7F0' }}>Resumo & Métricas</div>
+          <div style={{ padding: '5px', textAlign: 'center', fontSize: 8, fontWeight: 600, color: '#888' }}>Lista de Gastos</div>
+        </div>
+      </div>
+
+      <div style={{ flex: 1, padding: '4px 10px 8px', overflowY: 'hidden', display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {/* Health score */}
+        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 14, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+          <div style={{ flexShrink: 0 }}>
+            <svg viewBox="0 0 42 42" width="52" height="52">
+              <circle cx="21" cy="21" r="17" fill="none" stroke="#e8e4d9" strokeWidth="4"/>
+              <circle cx="21" cy="21" r="17" fill="none" stroke="#0F3D3E" strokeWidth="4"
+                strokeDasharray={`${0.9 * 106.8} 106.8`} strokeLinecap="round"
+                transform="rotate(-90 21 21)"/>
+              <text x="21" y="18.5" textAnchor="middle" fontSize="10" fontWeight="900" fill="#0F3D3E">90</text>
+              <text x="21" y="26" textAnchor="middle" fontSize="5" fontWeight="700" fill="#888">ÓTIMO</text>
+            </svg>
+          </div>
           <div>
-            <div style={{ fontSize: 7.5, fontWeight: 700, color: '#888', letterSpacing: '.5px', marginBottom: 4 }}>SAÚDE FINANCEIRA</div>
-            <div style={{ fontSize: 7.5, color: '#0F3D3E', display: 'flex', alignItems: 'center', gap: 4 }}>✓ Dentro do orçamento</div>
-            <div style={{ fontSize: 7.5, color: '#0F3D3E', display: 'flex', alignItems: 'center', gap: 4 }}>✓ PIX/Débito equilibrado</div>
+            <div style={{ fontSize: 7.5, fontWeight: 700, color: '#888', letterSpacing: '.5px', marginBottom: 5 }}>SAÚDE FINANCEIRA</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              {['✅ Dentro do orçamento', '✅ PIX/Débito equilibrado'].map(f => (
+                <div key={f} style={{ fontSize: 8, color: '#333', fontWeight: 500 }}>{f}</div>
+              ))}
+            </div>
           </div>
         </div>
-        {/* heat map */}
-        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 12, padding: '10px 12px' }}>
-          <div style={{ fontSize: 7, color: '#888', fontWeight: 700, marginBottom: 6 }}>MAPA DO CICLO</div>
+
+        {/* Heat map */}
+        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 14, padding: '10px 12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+          <div style={{ fontSize: 7.5, fontWeight: 700, color: '#888', letterSpacing: '.5px', marginBottom: 7 }}>MAPA DO CICLO</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 3 }}>
-            {Array.from({ length: 28 }, (_, i) => {
-              const intensities = [0,0.2,0,0.8,0,0.4,0.9,0,0.3,0,0.7,0,0.2,0,0.5,0.6,0,0.1,0,0.9,0,0.4,0,0.7,0,0.2,0.5,0]
-              const v = intensities[i] || 0
-              const bg = v === 0 ? '#f0ede6' : `rgba(15,61,62,${0.15 + v * 0.75})`
-              return <div key={i} style={{ height: 10, borderRadius: 2, background: bg }} />
-            })}
+            {'Dom Seg Ter Qua Qui Sex Sáb'.split(' ').map(d => (
+              <div key={d} style={{ fontSize: 5.5, color: '#bbb', textAlign: 'center', fontWeight: 600 }}>{d}</div>
+            ))}
+            {heatDays.map((v, i) => (
+              <div key={i} style={{
+                height: 13, borderRadius: 3,
+                background: v === 0 ? '#ede9df' : v > 0.85 ? '#0F3D3E' : v > 0.6 ? 'rgba(15,61,62,0.55)' : v > 0.35 ? 'rgba(15,61,62,0.3)' : 'rgba(15,61,62,0.15)',
+                border: i === 19 ? '1.5px solid #D4A373' : 'none',
+              }} />
+            ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 5, justifyContent: 'flex-end' }}>
+            {[0.1, 0.3, 0.55, 1].map(v => (
+              <div key={v} style={{ width: 9, height: 9, borderRadius: 2, background: v === 1 ? '#0F3D3E' : `rgba(15,61,62,${v})` }} />
+            ))}
+            <span style={{ fontSize: 6, color: '#bbb' }}>mais gasto</span>
           </div>
         </div>
-        {/* essencial vs superfluo */}
-        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 12, padding: '10px 12px' }}>
-          <div style={{ fontSize: 7, color: '#888', fontWeight: 700, marginBottom: 6 }}>ESSENCIAL VS SUPÉRFLUO</div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 7, color: '#0F3D3E', fontWeight: 700, marginBottom: 2 }}>Essencial · 65%</div>
-              <div style={{ height: 6, borderRadius: 99, background: '#e8e8e8' }}>
-                <div style={{ width: '65%', height: '100%', background: '#0F3D3E', borderRadius: 99 }} />
+
+        {/* Essencial vs superfluo */}
+        <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.1)', borderRadius: 14, padding: '10px 12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+          <div style={{ fontSize: 7.5, fontWeight: 700, color: '#888', letterSpacing: '.5px', marginBottom: 8 }}>ESSENCIAL VS SUPÉRFLUO</div>
+          <div style={{ display: 'flex', gap: 7 }}>
+            {[
+              { label: 'Essencial', pct: 65, val: 'R$ 893', color: '#0F3D3E' },
+              { label: 'Supérfluo', pct: 35, val: 'R$ 481', color: '#D4A373' },
+            ].map(g => (
+              <div key={g.label} style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+                  <span style={{ fontSize: 7.5, fontWeight: 700, color: g.color }}>{g.label}</span>
+                  <span style={{ fontSize: 7.5, fontWeight: 700, color: g.color }}>{g.pct}%</span>
+                </div>
+                <div style={{ height: 6, background: '#e8e4d9', borderRadius: 99 }}>
+                  <div style={{ width: `${g.pct}%`, height: '100%', background: g.color, borderRadius: 99 }} />
+                </div>
+                <div style={{ fontSize: 7, color: '#888', marginTop: 3 }}>{g.val}</div>
               </div>
-              <div style={{ fontSize: 6.5, color: '#888', marginTop: 2 }}>R$ 893,38</div>
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 7, color: '#D4A373', fontWeight: 700, marginBottom: 2 }}>Supérfluo · 35%</div>
-              <div style={{ height: 6, borderRadius: 99, background: '#e8e8e8' }}>
-                <div style={{ width: '35%', height: '100%', background: '#D4A373', borderRadius: 99 }} />
-              </div>
-              <div style={{ fontSize: 6.5, color: '#888', marginTop: 2 }}>R$ 481,25</div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
-      {/* bottom nav */}
-      <div style={{ background: '#FAF7F0', borderTop: '1px solid rgba(15,61,62,0.1)', display: 'flex', padding: '5px 0 8px', marginTop: 'auto' }}>
-        {[
-          { label: 'Início', active: false },
-          { label: 'Manual', active: false },
-          { label: 'Resumo', active: false },
-          { label: 'Análise', active: true },
-          { label: 'Config', active: false },
-        ].map(item => (
-          <div key={item.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            <div style={{ width: 13, height: 13, borderRadius: 3, background: item.active ? '#0F3D3E' : '#e8e8e8' }} />
-            <span style={{ fontSize: 6, color: item.active ? '#0F3D3E' : '#ccc', fontWeight: item.active ? 700 : 500 }}>{item.label}</span>
-          </div>
-        ))}
-      </div>
+
+      <BottomNav active="history" />
     </>
   )
 }
@@ -253,36 +337,12 @@ function ScreenAnalysis() {
 // ─── Features ────────────────────────────────────────────────────────────────
 
 const features = [
-  {
-    icon: (<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17.91 11c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>),
-    title: 'Registre por voz',
-    desc: 'Fale "gastei 50 em gasolina" e o Contaí categoriza, salva e confirma. Sem digitar, sem perder tempo.',
-  },
-  {
-    icon: (<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-6"/></svg>),
-    title: 'Análise inteligente',
-    desc: 'Score de saúde financeira, mapa de calor do mês, comparativo com ciclo anterior e previsão de gastos.',
-  },
-  {
-    icon: (<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>),
-    title: 'Limite por ciclo',
-    desc: 'Defina quanto quer gastar no mês ou na fatura. O app avisa quando está chegando no limite.',
-  },
-  {
-    icon: (<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>),
-    title: 'Resumo em segundos',
-    desc: 'Painel visual com total gasto, média diária, categorias e dias restantes no ciclo. Tudo no primeiro olhar.',
-  },
-  {
-    icon: (<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>),
-    title: 'Oportunidades de economia',
-    desc: 'O Contaí identifica onde você gastou mais que no mês anterior e mostra quanto pode economizar.',
-  },
-  {
-    icon: (<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>),
-    title: 'Seus dados, só seus',
-    desc: 'Nenhuma informação é compartilhada com terceiros. Seus gastos ficam seguros e privados.',
-  },
+  { emoji: '🎙️', title: 'Registre por voz', desc: 'Fale "gastei 50 em gasolina" e o Contaí categoriza, salva e confirma. Sem digitar, sem perder tempo.' },
+  { emoji: '📊', title: 'Análise inteligente', desc: 'Score de saúde financeira, mapa de calor do mês, comparativo com ciclo anterior e previsão de gastos.' },
+  { emoji: '🎯', title: 'Limite por ciclo', desc: 'Defina quanto quer gastar no mês ou na fatura. O app avisa quando está chegando no limite.' },
+  { emoji: '⚡', title: 'Resumo em segundos', desc: 'Painel visual com total gasto, média diária, categorias e dias restantes no ciclo. Tudo no primeiro olhar.' },
+  { emoji: '💡', title: 'Oportunidades de economia', desc: 'O Contaí identifica onde você gastou mais que no mês anterior e mostra quanto pode economizar.' },
+  { emoji: '🔒', title: 'Seus dados, só seus', desc: 'Nenhuma informação é compartilhada com terceiros. Seus gastos ficam seguros e privados.' },
 ]
 
 const steps = [
@@ -292,7 +352,18 @@ const steps = [
   { n: '4', title: 'Acompanhe e melhore', desc: 'Veja onde o dinheiro vai e tome decisões melhores todo mês.' },
 ]
 
-// ─── Page ────────────────────────────────────────────────────────────────────
+function CheckItem({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+      <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(15,61,62,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#0F3D3E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <span style={{ fontSize: 14, color: '#444' }}>{children}</span>
+    </div>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
   return (
@@ -305,6 +376,7 @@ export default function LandingPage() {
         borderBottom: '1px solid rgba(15,61,62,0.08)',
         padding: '0 24px', height: 60,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        maxWidth: '100%',
       }}>
         <Image src="/logo.png" alt="Contaí" width={90} height={28} style={{ objectFit: 'contain' }} priority />
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -317,67 +389,50 @@ export default function LandingPage() {
 
       {/* HERO */}
       <section style={{
-        background: 'linear-gradient(160deg, #0F3D3E 0%, #1a5c5d 60%, #0F3D3E 100%)',
-        padding: '64px 24px 0',
-        textAlign: 'center',
-        overflow: 'hidden',
+        background: 'linear-gradient(160deg, #0a2829 0%, #0F3D3E 50%, #1a5c5d 100%)',
+        padding: '72px 24px 0', textAlign: 'center', overflow: 'hidden',
       }}>
-        <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <div style={{
-            display: 'inline-block', background: 'rgba(212,163,115,0.18)',
-            border: '1px solid rgba(212,163,115,0.4)',
-            borderRadius: 20, padding: '5px 14px', fontSize: 12, fontWeight: 700,
-            color: '#D4A373', letterSpacing: '.5px', marginBottom: 24,
-          }}>
+        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+          <div style={{ display: 'inline-block', background: 'rgba(212,163,115,0.15)', border: '1px solid rgba(212,163,115,0.35)', borderRadius: 20, padding: '5px 14px', fontSize: 12, fontWeight: 700, color: '#D4A373', letterSpacing: '.5px', marginBottom: 24 }}>
             7 DIAS GRÁTIS · SEM CARTÃO
           </div>
-
-          <h1 style={{ fontSize: 'clamp(30px, 7vw, 50px)', fontWeight: 900, lineHeight: 1.1, color: '#FAF7F0', marginBottom: 20 }}>
+          <h1 style={{ fontSize: 'clamp(30px, 7vw, 52px)', fontWeight: 900, lineHeight: 1.08, color: '#FAF7F0', marginBottom: 20 }}>
             Controle financeiro que{' '}
             <span style={{ color: '#D4A373' }}>cabe no seu dia</span>
           </h1>
-
-          <p style={{ fontSize: 17, color: 'rgba(250,247,240,0.72)', lineHeight: 1.6, marginBottom: 36 }}>
+          <p style={{ fontSize: 17, color: 'rgba(250,247,240,0.7)', lineHeight: 1.65, marginBottom: 36, maxWidth: 480, margin: '0 auto 36px' }}>
             Registre gastos por voz em segundos, acompanhe seus limites e entenda seus hábitos — sem planilha, sem complicação.
           </p>
-
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 56 }}>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 64 }}>
             <Link href="/auth/signup" style={{ fontSize: 16, fontWeight: 800, color: '#0F3D3E', background: '#D4A373', borderRadius: 14, padding: '15px 30px', textDecoration: 'none', boxShadow: '0 4px 24px rgba(212,163,115,0.4)' }}>
               Começar 7 dias grátis
             </Link>
-            <Link href="#como-funciona" style={{ fontSize: 16, fontWeight: 700, color: '#FAF7F0', background: 'rgba(255,255,255,0.1)', borderRadius: 14, padding: '15px 26px', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <Link href="#como-funciona" style={{ fontSize: 16, fontWeight: 700, color: '#FAF7F0', background: 'rgba(255,255,255,0.1)', borderRadius: 14, padding: '15px 26px', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.18)' }}>
               Ver como funciona
             </Link>
           </div>
 
-          {/* 3 phones */}
-          <div style={{
-            display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 16,
-            paddingBottom: 0,
-          }}>
-            <div style={{ transform: 'translateY(24px) rotate(-6deg)', transformOrigin: 'bottom center' }}>
-              <Phone scale={0.82}><ScreenHome /></Phone>
+          {/* 3 phones in fan */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: -10, position: 'relative', paddingBottom: 0 }}>
+            <div style={{ transform: 'translateY(30px) rotate(-8deg) translateX(20px)', transformOrigin: 'bottom center', zIndex: 1 }}>
+              <PhoneShell><ScreenChat /></PhoneShell>
             </div>
-            <div style={{ transform: 'translateY(0px)', zIndex: 2 }}>
-              <Phone scale={0.95}><ScreenDashboard /></Phone>
+            <div style={{ zIndex: 3, transform: 'translateY(-10px)' }}>
+              <PhoneShell><ScreenDashboard /></PhoneShell>
             </div>
-            <div style={{ transform: 'translateY(24px) rotate(6deg)', transformOrigin: 'bottom center' }}>
-              <Phone scale={0.82}><ScreenAnalysis /></Phone>
+            <div style={{ transform: 'translateY(30px) rotate(8deg) translateX(-20px)', transformOrigin: 'bottom center', zIndex: 1 }}>
+              <PhoneShell><ScreenAnalysis /></PhoneShell>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SOCIAL PROOF BAR */}
-      <section style={{ background: '#0F3D3E', padding: '20px 24px', display: 'flex', justifyContent: 'center', gap: 48, flexWrap: 'wrap' }}>
-        {[
-          { n: '7 dias', l: 'de trial grátis' },
-          { n: '100%', l: 'seus dados privados' },
-          { n: '0', l: 'planilhas necessárias' },
-        ].map(item => (
+      {/* SOCIAL PROOF */}
+      <section style={{ background: '#0a2829', padding: '22px 24px', display: 'flex', justifyContent: 'center', gap: 48, flexWrap: 'wrap' }}>
+        {[{ n: '7 dias', l: 'de trial grátis' }, { n: '100%', l: 'dados privados' }, { n: '0', l: 'planilhas' }].map(item => (
           <div key={item.l} style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: '#D4A373' }}>{item.n}</div>
-            <div style={{ fontSize: 12, color: 'rgba(250,247,240,0.6)', fontWeight: 600 }}>{item.l}</div>
+            <div style={{ fontSize: 24, fontWeight: 900, color: '#D4A373' }}>{item.n}</div>
+            <div style={{ fontSize: 12, color: 'rgba(250,247,240,0.5)', fontWeight: 600 }}>{item.l}</div>
           </div>
         ))}
       </section>
@@ -392,13 +447,10 @@ export default function LandingPage() {
             O Contaí foi feito para quem quer controle financeiro sem burocracia.
           </p>
         </div>
-
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
           {features.map(f => (
             <div key={f.title} style={{ background: '#fff', borderRadius: 18, padding: '28px 24px', border: '1px solid rgba(15,61,62,0.08)', boxShadow: '0 2px 16px rgba(15,61,62,0.05)' }}>
-              <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(15,61,62,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0F3D3E', marginBottom: 16 }}>
-                {f.icon}
-              </div>
+              <div style={{ fontSize: 32, marginBottom: 14 }}>{f.emoji}</div>
               <h3 style={{ fontSize: 17, fontWeight: 700, color: '#0F3D3E', marginBottom: 8 }}>{f.title}</h3>
               <p style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>{f.desc}</p>
             </div>
@@ -406,82 +458,79 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* SCREENS SHOWCASE — Chat */}
+      {/* SHOWCASE: Chat */}
       <section style={{ background: '#F4F0E6', padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <div style={{ flex: '0 0 auto' }}>
-            <Phone scale={1.1}><ScreenHome /></Phone>
-          </div>
-          <div style={{ flex: '1 1 280px', maxWidth: 400 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#D4A373', letterSpacing: '1px', marginBottom: 12 }}>CHAT INTELIGENTE</div>
-            <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, color: '#0F3D3E', marginBottom: 16, lineHeight: 1.2 }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 64, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <PhoneShell style={{ boxShadow: '0 48px 120px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1)' }}>
+            <ScreenChat />
+          </PhoneShell>
+          <div style={{ flex: '1 1 300px', maxWidth: 420 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#D4A373', letterSpacing: '1.5px', marginBottom: 12 }}>CHAT INTELIGENTE</div>
+            <h2 style={{ fontSize: 'clamp(22px, 4vw, 34px)', fontWeight: 800, color: '#0F3D3E', marginBottom: 16, lineHeight: 1.2 }}>
               Registre um gasto em menos de 5 segundos
             </h2>
-            <p style={{ fontSize: 15, color: '#666', lineHeight: 1.7, marginBottom: 24 }}>
+            <p style={{ fontSize: 15, color: '#666', lineHeight: 1.7, marginBottom: 28 }}>
               Digite ou fale o gasto em linguagem natural. O Contaí identifica o valor, a categoria e salva automaticamente — sem formulário, sem campos para preencher.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {['"gastei 45 no mercado"', '"pizza 38 reais"', '"uber 22"'].map(ex => (
-                <div key={ex} style={{ background: '#0F3D3E', color: '#FAF7F0', borderRadius: '12px 12px 3px 12px', padding: '8px 14px', fontSize: 14, fontWeight: 500, display: 'inline-block', alignSelf: 'flex-end' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28 }}>
+              {['"pizza 38 reais no jantar"', '"gasolina 150 pix"', '"mercado 87,40"'].map(ex => (
+                <div key={ex} style={{ background: '#0F3D3E', color: '#FAF7F0', borderRadius: '14px 14px 3px 14px', padding: '9px 15px', fontSize: 14, display: 'inline-block', alignSelf: 'flex-end' }}>
                   {ex}
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SCREENS SHOWCASE — Dashboard */}
-      <section style={{ background: '#fff', padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap-reverse', justifyContent: 'center' }}>
-          <div style={{ flex: '1 1 280px', maxWidth: 400 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#D4A373', letterSpacing: '1px', marginBottom: 12 }}>RESUMO DO CICLO</div>
-            <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, color: '#0F3D3E', marginBottom: 16, lineHeight: 1.2 }}>
-              Tudo que importa em uma tela
-            </h2>
-            <p style={{ fontSize: 15, color: '#666', lineHeight: 1.7, marginBottom: 24 }}>
-              Total gasto, média diária, dias restantes e categorias com barras de progresso. Você sabe exatamente onde está no ciclo sem precisar calcular nada.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {['Total gasto no ciclo', 'Quanto ainda pode gastar', 'Categorias com mais gastos', 'Dias restantes no período'].map(item => (
-                <div key={item} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(15,61,62,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#0F3D3E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-                  </div>
-                  <span style={{ fontSize: 14, color: '#444' }}>{item}</span>
-                </div>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <CheckItem>Categorização automática</CheckItem>
+              <CheckItem>Registro por voz no microfone</CheckItem>
+              <CheckItem>Histórico salvo na conversa</CheckItem>
             </div>
           </div>
-          <div style={{ flex: '0 0 auto' }}>
-            <Phone scale={1.1}><ScreenDashboard /></Phone>
-          </div>
         </div>
       </section>
 
-      {/* SCREENS SHOWCASE — Analysis */}
-      <section style={{ background: '#F4F0E6', padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <div style={{ flex: '0 0 auto' }}>
-            <Phone scale={1.1}><ScreenAnalysis /></Phone>
+      {/* SHOWCASE: Resumo */}
+      <section style={{ background: '#fff', padding: '80px 24px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 64, flexWrap: 'wrap-reverse', justifyContent: 'center' }}>
+          <div style={{ flex: '1 1 300px', maxWidth: 420 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#D4A373', letterSpacing: '1.5px', marginBottom: 12 }}>RESUMO DO CICLO</div>
+            <h2 style={{ fontSize: 'clamp(22px, 4vw, 34px)', fontWeight: 800, color: '#0F3D3E', marginBottom: 16, lineHeight: 1.2 }}>
+              Tudo que importa em uma tela
+            </h2>
+            <p style={{ fontSize: 15, color: '#666', lineHeight: 1.7, marginBottom: 28 }}>
+              Total gasto, média diária, dias restantes e categorias com barras de progresso. Você sabe exatamente onde está no ciclo sem precisar calcular nada.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <CheckItem>Total gasto no ciclo atual</CheckItem>
+              <CheckItem>Quanto ainda pode gastar por dia</CheckItem>
+              <CheckItem>Categorias com barras de progresso</CheckItem>
+              <CheckItem>Dias restantes no período</CheckItem>
+            </div>
           </div>
-          <div style={{ flex: '1 1 280px', maxWidth: 400 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#D4A373', letterSpacing: '1px', marginBottom: 12 }}>ANÁLISE PROFUNDA</div>
-            <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, color: '#0F3D3E', marginBottom: 16, lineHeight: 1.2 }}>
+          <PhoneShell style={{ boxShadow: '0 48px 120px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1)' }}>
+            <ScreenDashboard />
+          </PhoneShell>
+        </div>
+      </section>
+
+      {/* SHOWCASE: Análise */}
+      <section style={{ background: '#F4F0E6', padding: '80px 24px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 64, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <PhoneShell style={{ boxShadow: '0 48px 120px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1)' }}>
+            <ScreenAnalysis />
+          </PhoneShell>
+          <div style={{ flex: '1 1 300px', maxWidth: 420 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#D4A373', letterSpacing: '1.5px', marginBottom: 12 }}>ANÁLISE PROFUNDA</div>
+            <h2 style={{ fontSize: 'clamp(22px, 4vw, 34px)', fontWeight: 800, color: '#0F3D3E', marginBottom: 16, lineHeight: 1.2 }}>
               Entenda seus hábitos de verdade
             </h2>
-            <p style={{ fontSize: 15, color: '#666', lineHeight: 1.7, marginBottom: 24 }}>
-              Score de saúde financeira, mapa de calor dos gastos por dia, divisão entre essencial e supérfluo, comparativo com o mês anterior e oportunidades de economia.
+            <p style={{ fontSize: 15, color: '#666', lineHeight: 1.7, marginBottom: 28 }}>
+              Score de saúde financeira, mapa de calor dos dias do ciclo, divisão entre gasto essencial e supérfluo, comparativo com o mês anterior.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {['Score de saúde 0–100', 'Mapa de calor do ciclo', 'Essencial vs supérfluo', 'Comparativo com ciclo anterior'].map(item => (
-                <div key={item} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(15,61,62,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#0F3D3E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-                  </div>
-                  <span style={{ fontSize: 14, color: '#444' }}>{item}</span>
-                </div>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <CheckItem>Score de saúde 0–100</CheckItem>
+              <CheckItem>Mapa de calor por dia</CheckItem>
+              <CheckItem>Essencial vs supérfluo</CheckItem>
+              <CheckItem>Comparativo com ciclo anterior</CheckItem>
             </div>
           </div>
         </div>
@@ -491,17 +540,17 @@ export default function LandingPage() {
       <section id="como-funciona" style={{ background: '#0F3D3E', padding: '80px 24px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: 'clamp(24px, 5vw, 38px)', fontWeight: 800, color: '#FAF7F0', marginBottom: 12 }}>Pronto em 4 passos</h2>
-          <p style={{ fontSize: 16, color: 'rgba(250,247,240,0.6)', marginBottom: 56 }}>Sem configuração complicada. Você começa a usar no primeiro minuto.</p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <p style={{ fontSize: 16, color: 'rgba(250,247,240,0.55)', marginBottom: 56 }}>Sem configuração complicada. Você começa a usar no primeiro minuto.</p>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {steps.map((s, i) => (
               <div key={s.n} style={{ display: 'flex', gap: 20, alignItems: 'flex-start', textAlign: 'left' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
                   <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#D4A373', color: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 900 }}>{s.n}</div>
-                  {i < steps.length - 1 && <div style={{ width: 2, height: 40, background: 'rgba(212,163,115,0.25)', margin: '4px 0' }} />}
+                  {i < steps.length - 1 && <div style={{ width: 2, height: 40, background: 'rgba(212,163,115,0.2)', margin: '4px 0' }} />}
                 </div>
                 <div style={{ paddingTop: 10, paddingBottom: i < steps.length - 1 ? 40 : 0 }}>
                   <h3 style={{ fontSize: 17, fontWeight: 700, color: '#FAF7F0', marginBottom: 4 }}>{s.title}</h3>
-                  <p style={{ fontSize: 14, color: 'rgba(250,247,240,0.6)', lineHeight: 1.6 }}>{s.desc}</p>
+                  <p style={{ fontSize: 14, color: 'rgba(250,247,240,0.55)', lineHeight: 1.6 }}>{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -515,18 +564,18 @@ export default function LandingPage() {
         <p style={{ fontSize: 16, color: '#888', marginBottom: 48 }}>Um plano único. Sem surpresas.</p>
         <div style={{ background: '#0F3D3E', borderRadius: 24, padding: '40px 32px', boxShadow: '0 8px 48px rgba(15,61,62,0.2)', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 16, right: 16, background: '#D4A373', color: '#0F3D3E', fontSize: 11, fontWeight: 800, letterSpacing: '.5px', borderRadius: 8, padding: '4px 10px' }}>7 DIAS GRÁTIS</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(250,247,240,0.6)', letterSpacing: '.5px', marginBottom: 12 }}>PLANO MENSAL</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(250,247,240,0.5)', letterSpacing: '.5px', marginBottom: 12 }}>PLANO MENSAL</div>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 4, marginBottom: 8 }}>
             <span style={{ fontSize: 16, fontWeight: 700, color: '#D4A373', alignSelf: 'flex-start', marginTop: 10 }}>R$</span>
             <span style={{ fontSize: 56, fontWeight: 900, color: '#FAF7F0', lineHeight: 1 }}>9</span>
             <span style={{ fontSize: 32, fontWeight: 900, color: '#FAF7F0', lineHeight: 1, marginBottom: 4 }}>,90</span>
-            <span style={{ fontSize: 14, color: 'rgba(250,247,240,0.5)', marginBottom: 8 }}>/mês</span>
+            <span style={{ fontSize: 14, color: 'rgba(250,247,240,0.4)', marginBottom: 8 }}>/mês</span>
           </div>
-          <p style={{ fontSize: 13, color: 'rgba(250,247,240,0.45)', marginBottom: 32 }}>Após 7 dias grátis · Cancele quando quiser</p>
+          <p style={{ fontSize: 13, color: 'rgba(250,247,240,0.4)', marginBottom: 32 }}>Após 7 dias grátis · Cancele quando quiser</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36, textAlign: 'left' }}>
             {['Registro por voz e texto', 'Análise e score de saúde financeira', 'Comparativo entre ciclos', 'Limite por categoria', 'Histórico completo', 'Acesso pelo celular como app'].map(item => (
               <div key={item} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(212,163,115,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(212,163,115,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#D4A373" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
                 </div>
                 <span style={{ fontSize: 14, color: 'rgba(250,247,240,0.8)' }}>{item}</span>
@@ -553,7 +602,7 @@ export default function LandingPage() {
             <details key={item.q} style={{ borderBottom: '1px solid rgba(15,61,62,0.1)', paddingBottom: 20, marginBottom: 20 }}>
               <summary style={{ fontSize: 16, fontWeight: 700, color: '#0F3D3E', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 {item.q}
-                <span style={{ color: '#D4A373', fontSize: 22, fontWeight: 400 }}>+</span>
+                <span style={{ color: '#D4A373', fontSize: 22, fontWeight: 300 }}>+</span>
               </summary>
               <p style={{ fontSize: 14, color: '#666', lineHeight: 1.7, marginTop: 12 }}>{item.a}</p>
             </details>
@@ -562,12 +611,12 @@ export default function LandingPage() {
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ background: 'linear-gradient(135deg, #0F3D3E 0%, #1a5c5d 100%)', padding: '80px 24px', textAlign: 'center' }}>
+      <section style={{ background: 'linear-gradient(135deg, #0a2829 0%, #0F3D3E 100%)', padding: '80px 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: 500, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(26px, 6vw, 40px)', fontWeight: 900, color: '#FAF7F0', marginBottom: 16, lineHeight: 1.15 }}>
             Comece a entender para onde vai seu dinheiro
           </h2>
-          <p style={{ fontSize: 16, color: 'rgba(250,247,240,0.65)', marginBottom: 40, lineHeight: 1.6 }}>7 dias grátis. Sem cartão. Cancele quando quiser.</p>
+          <p style={{ fontSize: 16, color: 'rgba(250,247,240,0.6)', marginBottom: 40, lineHeight: 1.6 }}>7 dias grátis. Sem cartão. Cancele quando quiser.</p>
           <Link href="/auth/signup" style={{ display: 'inline-block', fontSize: 17, fontWeight: 800, color: '#0F3D3E', background: '#D4A373', borderRadius: 14, padding: '18px 40px', textDecoration: 'none', boxShadow: '0 4px 32px rgba(212,163,115,0.45)' }}>
             Criar conta grátis
           </Link>
@@ -575,11 +624,9 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: '#0a2829', padding: '32px 24px', textAlign: 'center' }}>
-        <Image src="/logo.png" alt="Contaí" width={80} height={25} style={{ objectFit: 'contain', marginBottom: 16, opacity: 0.6 }} />
-        <p style={{ fontSize: 12, color: 'rgba(250,247,240,0.3)' }}>
-          © {new Date().getFullYear()} Contaí · Todos os direitos reservados
-        </p>
+      <footer style={{ background: '#050f10', padding: '32px 24px', textAlign: 'center' }}>
+        <Image src="/logo.png" alt="Contaí" width={80} height={25} style={{ objectFit: 'contain', marginBottom: 16, opacity: 0.5 }} />
+        <p style={{ fontSize: 12, color: 'rgba(250,247,240,0.25)' }}>© {new Date().getFullYear()} Contaí · Todos os direitos reservados</p>
       </footer>
     </div>
   )
