@@ -629,7 +629,7 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer style={{ background: '#050f10', padding: '32px 24px', textAlign: 'center' }}>
-        <Image src="/logo-verde.svg" alt="Contaí" width={100} height={30} style={{ objectFit: 'contain', marginBottom: 16, opacity: 0.4 }} />
+        <Image src="/logo.png" alt="Contaí" width={90} height={28} style={{ objectFit: 'contain', marginBottom: 16, opacity: 0.4 }} />
         <p style={{ fontSize: 12, color: 'rgba(250,247,240,0.25)' }}>© {new Date().getFullYear()} Contaí · Todos os direitos reservados</p>
       </footer>
     </div>
