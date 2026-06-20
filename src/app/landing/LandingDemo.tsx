@@ -5,16 +5,16 @@ import { useState, useRef, useEffect } from 'react'
 // ─── Demo categories ──────────────────────────────────────────────────────────
 
 const CATS = [
-  { id: 'food',           name: 'Alimentação',   emoji: '🍽️', color: '#F97316' },
-  { id: 'groceries',      name: 'Mercado',        emoji: '🛒', color: '#22C55E' },
-  { id: 'fuel',           name: 'Gasolina',       emoji: '⛽', color: '#3B82F6' },
-  { id: 'transportation', name: 'Transporte',     emoji: '🚗', color: '#06B6D4' },
-  { id: 'health',         name: 'Saúde',          emoji: '💊', color: '#EF4444' },
-  { id: 'shopping',       name: 'Compras',        emoji: '🛍️', color: '#A855F7' },
-  { id: 'entertainment',  name: 'Lazer',          emoji: '🎬', color: '#EC4899' },
-  { id: 'home',           name: 'Casa',           emoji: '🏠', color: '#84CC16' },
-  { id: 'pet',            name: 'Pet',            emoji: '🐾', color: '#F59E0B' },
-  { id: 'bars',           name: 'Bar/Restaurante',emoji: '🍺', color: '#D97706' },
+  { id: 'food',           name: 'Alimentação',    color: '#F97316' },
+  { id: 'groceries',      name: 'Mercado',         color: '#22C55E' },
+  { id: 'fuel',           name: 'Gasolina',        color: '#3B82F6' },
+  { id: 'transportation', name: 'Transporte',      color: '#06B6D4' },
+  { id: 'health',         name: 'Saúde',           color: '#EF4444' },
+  { id: 'shopping',       name: 'Compras',         color: '#A855F7' },
+  { id: 'entertainment',  name: 'Lazer',           color: '#EC4899' },
+  { id: 'home',           name: 'Casa',            color: '#84CC16' },
+  { id: 'pet',            name: 'Pet',             color: '#F59E0B' },
+  { id: 'bars',           name: 'Bar/Restaurante', color: '#D97706' },
 ]
 
 const KEYWORDS: Record<string, string> = {
@@ -81,7 +81,7 @@ function brl(n: number) {
 
 export default function LandingDemo() {
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: 'bot', text: 'Olá! Teste o Contaí aqui. Digite um gasto ou toque em um exemplo 👇' },
+    { role: 'bot', text: 'Olá! Teste o Contaí aqui. Digite um gasto ou toque em um exemplo abaixo.' },
   ])
   const [input, setInput] = useState('')
   const [spent, setSpent] = useState(0)
@@ -89,7 +89,9 @@ export default function LandingDemo() {
   const [expenses, setExpenses] = useState<{ cat: typeof CATS[0]; amount: number }[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
 
+  const mountedRef = useRef(false)
   useEffect(() => {
+    if (!mountedRef.current) { mountedRef.current = true; return }
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [msgs, typing])
 
@@ -108,13 +110,13 @@ export default function LandingDemo() {
       if (!parsed) {
         setMsgs(prev => [...prev, {
           role: 'bot',
-          text: 'Não consegui identificar o valor. Tente: "gastei 50 em gasolina" ou "pizza 32 reais" 😊',
+          text: 'Não consegui identificar o valor. Tente: "gastei 50 em gasolina" ou "pizza 32 reais".',
         }])
         return
       }
 
       setMsgs(prev => [...prev,
-        { role: 'bot', text: '✅ Registrado!' },
+        { role: 'bot', text: 'Registrado!' },
         { role: 'bot', card: { amount: parsed.amount, cat: parsed.cat } },
         { role: 'bot', text: 'Quer ajustar alguma coisa? É só pedir.' },
       ])
@@ -130,7 +132,7 @@ export default function LandingDemo() {
     <section style={{ background: 'linear-gradient(160deg, #0a2829 0%, #0F3D3E 100%)', padding: '80px 24px' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{ display: 'inline-block', background: 'rgba(212,163,115,0.15)', border: '1px solid rgba(212,163,115,0.3)', borderRadius: 20, padding: '5px 14px', fontSize: 12, fontWeight: 700, color: '#D4A373', letterSpacing: '.5px', marginBottom: 16 }}>
+          <div style={{ display: 'inline-block', background: 'rgba(212,163,115,0.15)', border: '1px solid rgba(212,163,115,0.3)', borderRadius: 20, padding: '5px 14px', fontSize: 12, fontWeight: 700, color: '#F5D060', letterSpacing: '.5px', marginBottom: 16 }}>
             EXPERIMENTE AGORA
           </div>
           <h2 style={{ fontSize: 'clamp(24px, 5vw, 38px)', fontWeight: 800, color: '#FAF7F0', marginBottom: 12 }}>
@@ -141,7 +143,7 @@ export default function LandingDemo() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+        <div className="demo-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
 
           {/* LEFT: Phone */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -175,7 +177,7 @@ export default function LandingDemo() {
                   <span style={{ fontSize: 16, fontWeight: 900, color: '#FAF7F0', letterSpacing: '-.3px' }}>Contaí</span>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>RESTANTE</div>
-                    <div style={{ fontSize: 14, color: remaining < 0 ? '#FCA5A5' : '#D4A373', fontWeight: 900 }}>{brl(remaining)}</div>
+                    <div style={{ fontSize: 14, color: remaining < 0 ? '#FCA5A5' : '#F5D060', fontWeight: 900 }}>{brl(remaining)}</div>
                   </div>
                 </div>
 
@@ -191,11 +193,11 @@ export default function LandingDemo() {
                         </div>
                       ) : m.card ? (
                         <div style={{ display: 'flex', gap: 6 }}>
-                          <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 10 }}>🤖</div>
+                          <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#FAF7F0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="8" width="18" height="13" rx="3"/><path d="M9 8V6a3 3 0 016 0v2"/><circle cx="9" cy="14" r="1.5" fill="#FAF7F0" stroke="none"/><circle cx="15" cy="14" r="1.5" fill="#FAF7F0" stroke="none"/></svg></div>
                           <div style={{ background: '#FAF7F0', border: `1.5px solid ${m.card.cat.color}33`, borderRadius: '12px 12px 12px 3px', padding: '10px 12px', maxWidth: '82%', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${m.card.cat.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
-                                {m.card.cat.emoji}
+                              <div style={{ width: 36, height: 36, borderRadius: 10, background: `${m.card.cat.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: 14, height: 14, borderRadius: 4, background: m.card.cat.color }} />
                               </div>
                               <div>
                                 <div style={{ fontSize: 15, fontWeight: 900, color: '#0F3D3E' }}>{brl(m.card.amount)}</div>
@@ -206,7 +208,7 @@ export default function LandingDemo() {
                         </div>
                       ) : (
                         <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end' }}>
-                          <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 10 }}>🤖</div>
+                          <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#FAF7F0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="8" width="18" height="13" rx="3"/><path d="M9 8V6a3 3 0 016 0v2"/><circle cx="9" cy="14" r="1.5" fill="#FAF7F0" stroke="none"/><circle cx="15" cy="14" r="1.5" fill="#FAF7F0" stroke="none"/></svg></div>
                           <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.12)', borderRadius: '12px 12px 12px 3px', padding: '8px 12px', maxWidth: '78%', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
                             <div style={{ fontSize: 10, color: '#333', lineHeight: 1.5 }}>{m.text}</div>
                           </div>
@@ -217,7 +219,7 @@ export default function LandingDemo() {
 
                   {typing && (
                     <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end' }}>
-                      <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 10 }}>🤖</div>
+                      <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#0F3D3E', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#FAF7F0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="8" width="18" height="13" rx="3"/><path d="M9 8V6a3 3 0 016 0v2"/><circle cx="9" cy="14" r="1.5" fill="#FAF7F0" stroke="none"/><circle cx="15" cy="14" r="1.5" fill="#FAF7F0" stroke="none"/></svg></div>
                       <div style={{ background: '#FAF7F0', border: '1px solid rgba(15,61,62,0.12)', borderRadius: '12px 12px 12px 3px', padding: '10px 14px' }}>
                         <div style={{ display: 'flex', gap: 4 }}>
                           {[0, 1, 2].map(i => (
@@ -284,7 +286,7 @@ export default function LandingDemo() {
                     disabled={typing}
                     style={{
                       background: 'rgba(212,163,115,0.12)', border: '1px solid rgba(212,163,115,0.3)',
-                      borderRadius: 20, padding: '7px 14px', fontSize: 13, color: '#D4A373',
+                      borderRadius: 20, padding: '7px 14px', fontSize: 13, color: '#F5D060',
                       fontWeight: 600, cursor: typing ? 'default' : 'pointer',
                       transition: 'all .15s', fontFamily: 'inherit',
                       opacity: typing ? 0.5 : 1,
@@ -305,7 +307,7 @@ export default function LandingDemo() {
                   <div style={{ fontSize: 12, color: 'rgba(250,247,240,0.5)' }}>gasto de {brl(LIMIT)}</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: remaining < 0 ? '#FCA5A5' : '#D4A373' }}>{brl(remaining)}</div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: remaining < 0 ? '#FCA5A5' : '#F5D060' }}>{brl(remaining)}</div>
                   <div style={{ fontSize: 12, color: 'rgba(250,247,240,0.5)' }}>restante</div>
                 </div>
               </div>
@@ -313,7 +315,7 @@ export default function LandingDemo() {
               <div style={{ height: 8, background: 'rgba(255,255,255,0.1)', borderRadius: 99 }}>
                 <div style={{
                   width: `${pct}%`, height: '100%', borderRadius: 99,
-                  background: pct >= 100 ? '#EF4444' : pct >= 80 ? '#F97316' : '#D4A373',
+                  background: pct >= 100 ? '#EF4444' : pct >= 80 ? '#F97316' : '#F5D060',
                   transition: 'width .5s ease, background .3s',
                 }} />
               </div>
@@ -327,8 +329,8 @@ export default function LandingDemo() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {expenses.map((e, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: 10, background: `${e.cat.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
-                        {e.cat.emoji}
+                      <div style={{ width: 32, height: 32, borderRadius: 10, background: `${e.cat.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ width: 12, height: 12, borderRadius: 3, background: e.cat.color }} />
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 13, fontWeight: 700, color: '#FAF7F0' }}>{e.cat.name}</div>
@@ -343,7 +345,9 @@ export default function LandingDemo() {
 
             {expenses.length === 0 && (
               <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 16, padding: '32px 20px', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center' }}>
-                <div style={{ fontSize: 32, marginBottom: 10 }}>👆</div>
+                <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}>
+                  <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="rgba(250,247,240,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                </div>
                 <div style={{ fontSize: 14, color: 'rgba(250,247,240,0.4)', lineHeight: 1.5 }}>
                   Digite um gasto ou toque em um exemplo para ver o app em ação
                 </div>
