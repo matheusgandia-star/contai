@@ -1,7 +1,4 @@
-'use client'
-
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { Link, useLocation } from 'react-router-dom'
 
 const items = [
   {
@@ -18,8 +15,7 @@ const items = [
     label: 'Manual',
     icon: (
       <svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M12 8v8M8 12h8"/>
+        <circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>
       </svg>
     ),
   },
@@ -38,8 +34,7 @@ const items = [
     label: 'Análise',
     icon: (
       <svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 3v18h18"/>
-        <path d="M7 16l4-4 4 4 4-6"/>
+        <path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-6"/>
       </svg>
     ),
   },
@@ -56,7 +51,7 @@ const items = [
 ]
 
 export default function BottomNav() {
-  const pathname = usePathname()
+  const { pathname } = useLocation()
 
   return (
     <nav style={{
@@ -69,7 +64,7 @@ export default function BottomNav() {
       {items.map(item => {
         const active = pathname === item.href
         return (
-          <Link key={item.href} href={item.href} style={{
+          <Link key={item.href} to={item.href} style={{
             flex: 1, background: 'none', border: 'none', textDecoration: 'none',
             color: active ? 'var(--accent)' : 'var(--muted)',
             fontSize: 11, fontWeight: active ? 700 : 600, letterSpacing: '.2px',

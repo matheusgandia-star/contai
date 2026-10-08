@@ -88,7 +88,7 @@ export function pcolorHero(pct: number): string {
   if (pct >= 100) return '#FCA5A5'
   if (pct >= 90)  return '#FDB88A'
   if (pct >= 70)  return '#FDE68A'
-  return '#D4A373'
+  return '#F5D060'
 }
 
 export function pcolor(pct: number): string {
